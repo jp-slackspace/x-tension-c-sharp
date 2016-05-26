@@ -20,14 +20,14 @@ namespace XTensions.Testing
                 , OutputMessageLevel.Level2);
 
             CaseProperties caseProps = HelperMethods.XWF_GetCaseProps();
-            HelperMethods.XWF_OutputMessage("Case Title: " + caseProps.caseTitle
+            HelperMethods.XWF_OutputMessage("Case Title: " + caseProps.CaseTitle
                 , OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("Case Examiner: " + caseProps.caseExaminer
+            HelperMethods.XWF_OutputMessage("Case Examiner: " + caseProps.CaseExaminer
                 , OutputMessageLevel.Level3);
             HelperMethods.XWF_OutputMessage("Case File Path: " 
-                + caseProps.caseFilePath, OutputMessageLevel.Level3);
+                + caseProps.CaseFilePath, OutputMessageLevel.Level3);
             HelperMethods.XWF_OutputMessage("Case Directory: " 
-                + caseProps.caseDirectory, OutputMessageLevel.Level3);
+                + caseProps.CaseDirectory, OutputMessageLevel.Level3);
             HelperMethods.XWF_OutputEmptyLine();
         }
     }

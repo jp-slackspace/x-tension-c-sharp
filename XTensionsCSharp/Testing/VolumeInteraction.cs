@@ -74,7 +74,7 @@ namespace XTensions.Testing
             HelperMethods.XWF_OutputMessage("Cluster Count: "
                 + volumeInformation.ClusterCount, OutputMessageLevel.Level3);
             HelperMethods.XWF_OutputMessage("First Cluster Sector Number: "
-                + volumeInformation.FirstClusterSectorNo, OutputMessageLevel.Level3);
+                + volumeInformation.FirstClusterSectorNumber, OutputMessageLevel.Level3);
 
             HelperMethods.XWF_OutputEmptyLine();
         }

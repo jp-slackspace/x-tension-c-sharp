@@ -315,9 +315,9 @@ namespace XTensions
 
                     HelperMethods.XWF_OutputMessage(string.Format(
                         ", Code Pages: {0}, {1}, {2}, {3}, {4}"
-                        , codePages.nCodePage1, codePages.nCodePage2
-                        , codePages.nCodePage3, codePages.nCodePage4
-                        , codePages.nCodePage5));
+                        , codePages.CodePage1, codePages.CodePage2
+                        , codePages.CodePage3, codePages.CodePage4
+                        , codePages.CodePage5));
                 }
             }
 

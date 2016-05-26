@@ -1067,7 +1067,7 @@ namespace XTensions
         /// <summary>The cluster count.</summary>
         public long ClusterCount;
         /// <summary>the first cluster's sector number.</summary>
-        public long FirstClusterSectorNo;
+        public long FirstClusterSectorNumber;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
