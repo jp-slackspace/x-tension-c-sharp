@@ -101,7 +101,7 @@ namespace XTensions
         public static XWFGetEvObjDelegate XWF_GetEvObj;
 
         public delegate IntPtr XWFGetReportTableInfoDelegate(IntPtr pReserved
-            , long nReportTableID, ReportTableInformationOptions lpOptional);
+            , int nReportTableID, ReportTableInformationOptions lpOptional);
         public static XWFGetReportTableInfoDelegate XWF_GetReportTableInfo;
 
         public delegate IntPtr XWFGetEvObjReportTableAssocsDelegate(IntPtr hEvidence

@@ -599,31 +599,31 @@ namespace XTensions
         {
             return ImportedMethods.XWF_GetEvObj(evidenceObjectId);
         }
-        
+
         /// <summary>
-        /// If nReportTableID designates an existing report table in the current case,
-        /// returns a pointer to the null-terminated name of that report table, or 
-        /// otherwise NULL. nReportTableID may be set to -1 to retrieve the maximum 
-        /// number of report tables supported by the active version in the integer 
-        /// pointed to by lpOptional. Valid report table IDs range from 0 to (maximum
-        /// number: -1).  Available in v17.7 and later.
+        /// Gets the name of a report table, null if none, or the maximum number of
+        /// report table names if reportTableId is set to -1. Valid report table IDs 
+        /// range from 0 to (maximum number: -1).  Available in v17.7 and later.
         /// </summary>
-        /// <param name="nReportTableID">An existing report table ID or -1 to get the 
+        /// <param name="reportTableId">An existing report table ID or -1 to get the 
         /// maximum number of report tables.</param>
-        /// <param name="lpOptional">Must be 0 before v18.1. Should be 
-        /// XWFGetReportTableInfoFlags in v18.1 and beyond.</param>
+        /// <param name="informationOptions">ReportTableInformationOptions options.
+        /// Should be ReportTableInformationOptions.None before v18.1.</param>
         /// <returns></returns>
-        public static string XWF_GetReportTableInfo(long nReportTableID
-            , ReportTableInformationOptions lpOptional)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Right now catching exceptions; need to figure out what's happening.
+        /// - Need to test what happens when -1 if supplied.</remarks>
+        public static string XWF_GetReportTableInfo(int reportTableId
+            , ReportTableInformationOptions informationOptions)
         {
             try
             {
-                IntPtr hReportName = ImportedMethods.XWF_GetReportTableInfo(IntPtr.Zero
-                    , nReportTableID, lpOptional);
-                string sReportName = Marshal.PtrToStringUni(hReportName);
-                Marshal.FreeHGlobal(hReportName);
+                IntPtr ReportNameBuffer = ImportedMethods.XWF_GetReportTableInfo(
+                    IntPtr.Zero, reportTableId, informationOptions);
+                string ReportName = Marshal.PtrToStringUni(ReportNameBuffer);
+                Marshal.FreeHGlobal(ReportNameBuffer);
 
-                return sReportName;
+                return ReportName;
             }
             catch (System.AccessViolationException e)
             {

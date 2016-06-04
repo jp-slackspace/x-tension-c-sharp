@@ -3,3 +3,8 @@ C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTension
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\obj\Debug\XTensionsCSharp.csprojResolveAssemblyReference.cache
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\obj\Debug\XTensionsCSharp.dll
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\obj\Debug\XTensionsCSharp.pdb
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\Debug\XTensionsCSharp.dll
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\Debug\XTensionsCSharp.pdb
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\Debug\XTensionsCSharp.csprojResolveAssemblyReference.cache
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\Debug\XTensionsCSharp.dll
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\Debug\XTensionsCSharp.pdb
