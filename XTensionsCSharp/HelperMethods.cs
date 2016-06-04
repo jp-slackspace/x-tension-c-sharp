@@ -409,51 +409,59 @@ namespace XTensions
         /// or takes the volume snapshot and returns a handle to the volume that the
         /// evidence object represents. Use this function if you wish to read data from 
         /// the volume or process the volume snapshot. Potentially time-consuming. 
-        /// Available from v17.6.
+        /// Available from v17.6. Options must be EvidenceOpenOptions.None in v18.0 and 
+        /// older.
         /// </summary>
-        /// <param name="hEvidence">A pointer to the evidence object.</param>
-        /// <param name="nFlags">XWFOpenEvObjFlags open flags.</param>
+        /// <param name="evidence">A pointer to the evidence object.</param>
+        /// <param name="options">EvidenceOpenOptions open options.</param>
         /// <returns>Returns a handle to the volume that the evidence object represents 
-        /// or returns 0 if unsuccessful. Must be 0 in v18.0 and older.</returns>
-        public static IntPtr XWF_OpenEvObj(IntPtr hEvidence, EvidenceOpenOptions nFlags)
+        /// or returns 0 if unsuccessful.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static IntPtr XWF_OpenEvObj(IntPtr evidence, EvidenceOpenOptions options)
         {
-            return ImportedMethods.XWF_OpenEvObj(hEvidence, nFlags);
+            return ImportedMethods.XWF_OpenEvObj(evidence, options);
         }
 
         /// <summary>
         /// Closes the specified evidence object if it is open currently and unloads the
         /// volume snapshot, otherwise does nothing. Available from v17.6.
         /// </summary>
-        /// <param name="hEvidence"></param>
-        public static void XWF_CloseEvObj(IntPtr hEvidence)
+        /// <param name="evidence">The evidence object to close.</param>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static void XWF_CloseEvObj(IntPtr evidence)
         {
-            ImportedMethods.XWF_CloseEvObj(hEvidence);
+            ImportedMethods.XWF_CloseEvObj(evidence);
         }
 
         /// <summary>
         /// Retrieves information about the specified evidence object. Does not require
-        /// that the evidence object be open.
+        /// that the evidence object be open. Available from v17.6.
         /// </summary>
-        /// <param name="hEvidence">A pointer to the evidence object.</param>
-        /// <returns>Rerturns a struct with the object's properties.</returns>
-        public static EvidenceObjectProperties XWF_GetEvObjProp(IntPtr hEvidence)
+        /// <param name="evidence">A pointer to the evidence object.</param>
+        /// <returns>Returns a EvidenceObjectProperites struct.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static EvidenceObjectProperties XWF_GetEvObjProp(IntPtr evidence)
         {
+            // Fail if an evidence pointer wasn't provided.
+            if (evidence == IntPtr.Zero) throw new ArgumentException(
+                "Zero evidence pointer provided.");
+
             EvidenceObjectProperties props = new EvidenceObjectProperties();
 
             // Get the object number.
-            props.objectNumber = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.objectNumber = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.EvidenceObjectNumber, IntPtr.Zero);
 
             // Get the object ID.
-            props.objectID = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.objectID = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.EvidenceObjectID, IntPtr.Zero);
 
             // Get the parent object ID.
-            props.parentObjectID = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.parentObjectID = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ParentEvidenceObjectID, IntPtr.Zero);
 
             // Get the title.
-            long tmpPtr = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            long tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.Title, IntPtr.Zero);
             props.title = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
@@ -463,66 +471,66 @@ namespace XTensions
             // Get the extended title.
             IntPtr bufferPtr = Marshal.AllocHGlobal(bufferSize);
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            ImportedMethods.XWF_GetEvObjProp(hEvidence
+            ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ExtendedTitle, bufferPtr);
             props.extendedTitle = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the abbreviated title.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            ImportedMethods.XWF_GetEvObjProp(hEvidence
+            ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.AbbreviatedTitle, bufferPtr);
             props.abbreviatedTitle = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the internal name.
-            tmpPtr = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.InternalName, IntPtr.Zero);
             props.internalName = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the description.
-            tmpPtr = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.Description, IntPtr.Zero);
             props.description = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the examiner comments.
-            tmpPtr = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ExaminerComments, IntPtr.Zero);
             props.examinerComments = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the internally used directory.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            ImportedMethods.XWF_GetEvObjProp(hEvidence
+            ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.InternallyUsedDirectory, bufferPtr);
             props.internallyUsedDirectory = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the output directory.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            ImportedMethods.XWF_GetEvObjProp(hEvidence
+            ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.OutputDirectory, bufferPtr);
             props.outputDirectory = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the size in bytes.
-            props.SizeInBytes = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.SizeInBytes = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.SizeInBytes, IntPtr.Zero);
 
             // Get the volume snapshot file count.
-            props.VolumeSnapshotFileCount = ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.VolumeSnapshotFileCount = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.VolumeSnapshotFileCount, IntPtr.Zero);
 
             // Get the flags.
             props.Flags = (EvidenceProperties)ImportedMethods.XWF_GetEvObjProp(
-                hEvidence, EvidencePropertyType.Flags, IntPtr.Zero);
+                evidence, EvidencePropertyType.Flags, IntPtr.Zero);
 
             // Get the file system identifier.
             props.FileSystemIdentifier
-                = (VolumeFileSystem)ImportedMethods.XWF_GetEvObjProp(hEvidence
+                = (VolumeFileSystem)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.FileSystemIdentifier, IntPtr.Zero);
 
             // Get the hash type.
-            props.HashType = (HashType)ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.HashType = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.HashType, IntPtr.Zero);
 
             // Get the hash value.
@@ -533,7 +541,7 @@ namespace XTensions
             else
             {
                 bufferPtr = Marshal.AllocHGlobal(bufferSize);
-                int hashSize = (int)ImportedMethods.XWF_GetEvObjProp(hEvidence
+                int hashSize = (int)ImportedMethods.XWF_GetEvObjProp(evidence
                     , EvidencePropertyType.HashValue, bufferPtr);
                 Byte[] hash1 = new Byte[hashSize];
                 Marshal.Copy(bufferPtr, hash1, 0, hashSize);
@@ -543,15 +551,15 @@ namespace XTensions
 
             // Get the creation time.
             props.CreationTime = DateTime.FromFileTime(ImportedMethods.XWF_GetEvObjProp(
-                hEvidence, EvidencePropertyType.CreationTime, IntPtr.Zero));
+                evidence, EvidencePropertyType.CreationTime, IntPtr.Zero));
 
             // Get the modification time.
             props.ModificationTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetEvObjProp(hEvidence
+                ImportedMethods.XWF_GetEvObjProp(evidence
                     , EvidencePropertyType.ModificationTime, IntPtr.Zero));
 
             // Get the hash 2 type.
-            props.HashType2 = (HashType)ImportedMethods.XWF_GetEvObjProp(hEvidence
+            props.HashType2 = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.HashType2, IntPtr.Zero);
 
             // Get the hash 2 value.
@@ -562,7 +570,7 @@ namespace XTensions
             else
             {
                 bufferPtr = Marshal.AllocHGlobal(bufferSize);
-                int hashSize = (int)ImportedMethods.XWF_GetEvObjProp(hEvidence
+                int hashSize = (int)ImportedMethods.XWF_GetEvObjProp(evidence
                     , EvidencePropertyType.HashValue2, bufferPtr);
                 Byte[] hash2 = new Byte[hashSize];
                 Marshal.Copy(bufferPtr, hash2, 0, hashSize);
@@ -570,16 +578,28 @@ namespace XTensions
                 Marshal.FreeHGlobal(bufferPtr);
             }
 
-            /*
-            bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            XWF_GetEvObjProp(hEvidence, XWFGetEvObjPropTypes.HashValue2, bufferPtr);
-            props.HashValue2 = Marshal.PtrToStringUni(bufferPtr);
-            Marshal.FreeHGlobal(bufferPtr);
-            */
-
             return props;
         }
 
+        /// <summary>
+        /// Retrieves a handle to the evidence object with the specified unique ID. The 
+        /// unique ID of an evidence object remains the same after closing and re-opening 
+        /// a case, whereas the handle will likely change. The evidence object number may 
+        /// also change. That happens if the user re-orders the evidence objects in the 
+        /// case. The unique ID, however, is guaranteed to never change and also 
+        /// guaranteed to be unique within the case (actually likely unique even across 
+        /// all the cases that the user will even deal with) and can be used to reliably 
+        /// recognize a known evidence object. Available from v18.7.
+        /// </summary>
+        /// <param name="evidenceObjectId"></param>
+        /// <returns>Returns a pointer to the evidence object corresponding to the 
+        /// specified evidence object Id or NULL if not found.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        private static IntPtr XWF_GetEvObj(uint evidenceObjectId)
+        {
+            return ImportedMethods.XWF_GetEvObj(evidenceObjectId);
+        }
+        
         /// <summary>
         /// If nReportTableID designates an existing report table in the current case,
         /// returns a pointer to the null-terminated name of that report table, or 

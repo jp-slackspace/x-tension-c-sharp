@@ -97,6 +97,9 @@ namespace XTensions
         public static XWFSetEvObjPropDelegate XWF_SetEvObjProp;
         */
 
+        public delegate IntPtr XWFGetEvObjDelegate(uint nEvObjID);
+        public static XWFGetEvObjDelegate XWF_GetEvObj;
+
         public delegate IntPtr XWFGetReportTableInfoDelegate(IntPtr pReserved
             , long nReportTableID, ReportTableInformationOptions lpOptional);
         public static XWFGetReportTableInfoDelegate XWF_GetReportTableInfo;
@@ -415,6 +418,9 @@ namespace XTensions
                 XWFSetEvObjProp = GetMethodDelegate<XWFSetEvObjPropDelegate>(
                     moduleHandle, "XWF_SetEvObjProp");
                 */
+
+                XWF_GetEvObj = GetMethodDelegate<XWFGetEvObjDelegate>(
+                    moduleHandle, "XWF_GetEvObj");
 
                 XWF_GetReportTableInfo 
                     = GetMethodDelegate<XWFGetReportTableInfoDelegate>(
