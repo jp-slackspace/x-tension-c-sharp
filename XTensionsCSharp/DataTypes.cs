@@ -458,7 +458,8 @@ namespace XTensions
         EmbeddedDataAlreadyUncovered = 0x40000000u,
         MetadataExtractionAlreadyApplied = 0x80000000u,
         FileEmbeddedInOtherFileLinearly = 0x100000000u,
-        FileContentsStoredExternally = 0x200000000
+        FileContentsStoredExternally = 0x200000000,
+        AlternativeDataAvailable = 0x400000000
     }
 
     /// <summary>
@@ -499,7 +500,7 @@ namespace XTensions
         XWF_ITEM_INFO_FLAGS_SET = 64,
         /// <summary>Indicates flags that should be removed, others should remain 
         /// unchanged.</summary>
-        XWF_ITEM_INFO_FLAGS_REMOVE = 65
+        XWF_ITEM_INFO_FLAGS_REMOVE = 65,
     }
 
     /// <summary>

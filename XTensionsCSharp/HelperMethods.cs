@@ -224,8 +224,9 @@ namespace XTensions
         /// <param name="offset">The offset to read from.</param>
         /// <param name="numberOfBytesToRead">The number of bytes to read.</param>
         /// <returns>Returns a byte array of the bytes read.</returns>
-        /// <remarks>Version 1.0 coding complete. Does XWF_Read really need to use a 
-        /// DWORD (uint) for number of bytes to read?</remarks>
+        /// <remarks>Version 1.0 coding complete. 
+        /// - Does XWF_Read really need to use a DWORD (uint) for number of bytes to 
+        /// read?</remarks>
         public static byte[] XWF_Read(IntPtr volumeOrItem, long offset = 0
             , int numberOfBytesToRead = 0)
         {
@@ -260,6 +261,9 @@ namespace XTensions
         /// Retrieves information about the current case.
         /// </summary>
         /// <returns>Returns a CaseProperties structure.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Need to handle when -1 is returned from API call; indicating that no case
+        /// is loaded.</remarks>
         public static CaseProperties XWF_GetCaseProps()
         {
             CaseProperties props = new CaseProperties();
@@ -267,8 +271,8 @@ namespace XTensions
             // Read the title.
             int bufferSize = (int)_casePropertiesLength;
             IntPtr bufferPtr = Marshal.AllocHGlobal(bufferSize);
-            ImportedMethods.XWF_GetCaseProp(IntPtr.Zero
-                , (int)CasePropertyType.CaseTitle, bufferPtr, bufferSize);
+            ImportedMethods.XWF_GetCaseProp(IntPtr.Zero, (int)CasePropertyType.CaseTitle
+                , bufferPtr, bufferSize);
             props.CaseTitle = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
@@ -299,9 +303,12 @@ namespace XTensions
         /// <summary>
         /// Retrieves a handle to the first evidence object in the case. In conjunction
         /// with XWF_GetNextEvObj this function allows to enumerate all evidence objects
-        /// of the case.
+        /// of the case. Available from v17.6.
         /// </summary>
-        /// <returns>Returns a pointer to the first evidence object.</returns>
+        /// <returns>Returns a pointer to the first evidence objector, or NULL if the 
+        /// active case has no evidence objects or (in releases from June 2016) if no 
+        /// case is active.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr XWF_GetFirstEvObj()
         {
             return ImportedMethods.XWF_GetFirstEvObj(IntPtr.Zero);
@@ -309,69 +316,90 @@ namespace XTensions
 
         /// <summary>
         /// Given a pointer to the previous evidence object, retrieves the next evidence
-        /// object in the chain.
+        /// object in the chain. Available from v17.6.
         /// </summary>
         /// <param name="hPrevEvidence">Previous evidence object.</param>
         /// <returns>Returns a pointer to the next evidence object.</returns>
-        public static IntPtr XWF_GetNextEvObj(IntPtr hPrevEvidence)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static IntPtr XWF_GetNextEvObj(IntPtr PreviousEvidence)
         {
-            // If a zero pointer is provided as previous evidence, return the same.
-            if (hPrevEvidence == IntPtr.Zero)
+            // Handle case where zero pointer is provided.
+            if (PreviousEvidence == IntPtr.Zero)
             {
                 return IntPtr.Zero;
             }
-            return ImportedMethods.XWF_GetNextEvObj(hPrevEvidence, IntPtr.Zero);
+
+            return ImportedMethods.XWF_GetNextEvObj(PreviousEvidence, IntPtr.Zero);
         }
+
+        /*
+        /// <summary>
+        /// NOT CURRENTLY IMPLEMENTED. Removes the specified evidence object from the 
+        /// case. 
+        /// </summary>
+        /// <param name="EvidenceObject">Evidence object to be deleted.</param>
+        /// <returns></returns>
+        public static IntPtr XWF_DeleteEvObj(IntPtr EvidenceObject)
+        {
+            return IntPtr.Zero;
+        }
+        */
 
         /// <summary>
         /// Creates one or more evidence objects from one source (which can be a medium,
-        /// disk/volume image, memory dump, or a directory/path). Available in v16.5 and
+        /// disk/volume image, memory dump, or a directory/path). A case must already be 
+        /// loaded. If more than 1 evidence object is created (for example for a physical 
+        /// disk that contains partitions, which count as evidence objects themselves), 
+        /// use XWF_GetNextEvObj to find them. Available in v16.5 and
         /// later.
         /// </summary>
-        /// <param name="nDiskID">The XWFEvidenceObjTypeID disk type ID</param>
-        /// <param name="lpPath">Path in case of a file or directory, otherwise NULL.
+        /// <param name="EvidenceType">The evidence object type.</param>
+        /// <param name="objectPath">Path in case of a file or directory, otherwise NULL.
         /// </param>
         /// <returns>Returns the first evidence object created, or NULL in case of an
         /// error.</returns>
-        public static IntPtr XWF_CreateEvObj(EvidenceObjectType nDiskID
-            , [MarshalAs(UnmanagedType.LPWStr)] string lpPath = null)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Not sure a marshalled type is needed in the parameters.</remarks>
+        public static IntPtr XWF_CreateEvObj(EvidenceObjectType evidenceType
+            , [MarshalAs(UnmanagedType.LPWStr)] string objectPath = null)
         {
             // Make sure a path was provided if one is expected.
-            if ((nDiskID == EvidenceObjectType.DiskImage
-                || nDiskID == EvidenceObjectType.MemoryDump
-                || nDiskID == EvidenceObjectType.Directory
-                || nDiskID == EvidenceObjectType.File) && lpPath == null)
+            if ((evidenceType == EvidenceObjectType.DiskImage
+                || evidenceType == EvidenceObjectType.MemoryDump
+                || evidenceType == EvidenceObjectType.Directory
+                || evidenceType == EvidenceObjectType.File) && objectPath == null)
             {
                 return IntPtr.Zero;
             }
 
-            EvidenceObjectCategory nType;
+            EvidenceObjectCategory EvidenceType;
 
             // Determine the type based on the disk ID provided.
-            switch (nDiskID)
+            switch (evidenceType)
             {
                 case EvidenceObjectType.DiskImage:
-                    nType = EvidenceObjectCategory.Image;
-                    nDiskID = EvidenceObjectType.FileBased;
+                    EvidenceType = EvidenceObjectCategory.Image;
+                    evidenceType = EvidenceObjectType.FileBased;
                     break;
                 case EvidenceObjectType.MemoryDump:
-                    nType = EvidenceObjectCategory.MemoryDump;
-                    nDiskID = EvidenceObjectType.FileBased;
+                    EvidenceType = EvidenceObjectCategory.MemoryDump;
+                    evidenceType = EvidenceObjectType.FileBased;
                     break;
                 case EvidenceObjectType.Directory:
-                    nType = EvidenceObjectCategory.Directory;
-                    nDiskID = EvidenceObjectType.FileBased;
+                    EvidenceType = EvidenceObjectCategory.Directory;
+                    evidenceType = EvidenceObjectType.FileBased;
                     break;
                 case EvidenceObjectType.File:
-                    nType = EvidenceObjectCategory.File;
-                    nDiskID = EvidenceObjectType.FileBased;
+                    EvidenceType = EvidenceObjectCategory.File;
+                    evidenceType = EvidenceObjectType.FileBased;
                     break;
                 default:
-                    nType = EvidenceObjectCategory.Disk;
+                    EvidenceType = EvidenceObjectCategory.Disk;
                     break;
             }
 
-            return ImportedMethods.XWF_CreateEvObj(nType, nDiskID, lpPath, IntPtr.Zero);
+            return ImportedMethods.XWF_CreateEvObj(EvidenceType, evidenceType, objectPath
+                , IntPtr.Zero);
         }
 
         /// <summary>
