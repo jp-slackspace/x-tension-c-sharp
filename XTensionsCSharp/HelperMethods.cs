@@ -225,7 +225,7 @@ namespace XTensions
         /// <param name="numberOfBytesToRead">The number of bytes to read.</param>
         /// <returns>Returns a byte array of the bytes read.</returns>
         /// <remarks>Version 1.0 coding complete. 
-        /// - Does XWF_Read really need to use a DWORD (uint) for number of bytes to 
+        /// - Todo: Does XWF_Read really need to use a DWORD (uint) for number of bytes to 
         /// read?</remarks>
         public static byte[] XWF_Read(IntPtr volumeOrItem, long offset = 0
             , int numberOfBytesToRead = 0)
@@ -262,7 +262,7 @@ namespace XTensions
         /// </summary>
         /// <returns>Returns a CaseProperties structure.</returns>
         /// <remarks>Version 1.0 coding complete.
-        /// - Need to handle when -1 is returned from API call; indicating that no case
+        /// - Todo: Need to handle when -1 is returned from API call; indicating that no case
         /// is loaded.</remarks>
         public static CaseProperties XWF_GetCaseProps()
         {
@@ -359,7 +359,7 @@ namespace XTensions
         /// <returns>Returns the first evidence object created, or NULL in case of an
         /// error.</returns>
         /// <remarks>Version 1.0 coding complete.
-        /// - Not sure a marshalled type is needed in the parameters.</remarks>
+        /// - Todo: Not sure a marshalled type is needed in the parameters.</remarks>
         public static IntPtr XWF_CreateEvObj(EvidenceObjectType evidenceType
             , [MarshalAs(UnmanagedType.LPWStr)] string objectPath = null)
         {
@@ -609,10 +609,10 @@ namespace XTensions
         /// maximum number of report tables.</param>
         /// <param name="informationOptions">ReportTableInformationOptions options.
         /// Should be ReportTableInformationOptions.None before v18.1.</param>
-        /// <returns></returns>
+        /// <returns>Returns the name of a given report table or null if none.</returns>
         /// <remarks>Version 1.0 coding complete.
-        /// - Right now catching exceptions; need to figure out what's happening.
-        /// - Need to test what happens when -1 if supplied.</remarks>
+        /// - Todo: Right now catching exceptions; need to figure out what's happening.
+        /// - Todo: Need to test what happens when -1 if supplied.</remarks>
         public static string XWF_GetReportTableInfo(int reportTableId
             , ReportTableInformationOptions informationOptions)
         {
@@ -641,78 +641,100 @@ namespace XTensions
         /// snapshot, especially if the snapshot is huge. The list consists of 16-bit
         /// report table ID and 32-bit item ID pairs repeatedly, stored back to back.
         /// </summary>
-        /// <param name="hEvidence">A pointer to the evidence object.</param>
-        /// <param name="nFlags">Optional. Return list flags.</param>
+        /// <param name="evidence">A pointer to the evidence object.</param>
+        /// <param name="options">Optional. Return list flags.</param>
         /// <returns></returns>
-        public static IntPtr XWF_GetEvObjReportTableAssocs(IntPtr hEvidence
-            , uint nFlags = 0x01)
+        /// <remarks>Version 0.5 coding complete.
+        /// - Todo: Need to test the output and build an array of items returned.
+        /// - Todo: Need to figure out what the flags are used for.
+        /// </remarks>
+        public static IntPtr XWF_GetEvObjReportTableAssocs(IntPtr evidence
+            , uint options = 0x01)
         {
             IntPtr lpValue;
             IntPtr associationList = ImportedMethods.XWF_GetEvObjReportTableAssocs(
-                hEvidence, nFlags, out lpValue);
+                evidence, options, out lpValue);
 
-            return IntPtr.Zero;
+            return lpValue;
         }
 
         /// <summary>
         /// Defines to which volume's volume snapshot subsequent calls of the below
         /// functions apply should you wish to change that.
         /// </summary>
-        /// <param name="hVolume">A pointer to the specified volume.</param>
-        public static bool XWF_SelectVolumeSnapshot(IntPtr hVolume)
+        /// <param name="volume">A pointer to the specified volume.</param>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static void XWF_SelectVolumeSnapshot(IntPtr volume)
         {
-            // Check for valid provided volume pointer.
-            if (hVolume != IntPtr.Zero)
-            {
-                ImportedMethods.XWF_SelectVolumeSnapshot(hVolume);
-                return true;
-            }
+            // Fail if an evidence pointer wasn't provided.
+            if (volume == IntPtr.Zero) throw new ArgumentException(
+                "Zero volume pointer provided.");
 
-            return false;
+            ImportedMethods.XWF_SelectVolumeSnapshot(volume);
         }
 
         /// <summary>
         /// Retrieves information about the current volume snapshot. Available in v17.4
         /// and later.
         /// </summary>
-        /// <param name="nPropType">Property type (XWFGetVSPropType).</param>
+        /// <param name="propertyType">Property type.</param>
         /// <param name="specialItemType">Optional. Special item type. Only required
-        /// when nPropType is XWFGetVSPropType.SpecialItemID.</param>
-        /// <returns></returns>
-        public static long XWF_GetVSProp(VolumeSnapshotPropertyType nPropType
+        /// when propertyType is SpecialItemID.</param>
+        /// <returns>Returns the property requested.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Not sure we need this since we have another method below to get all 
+        /// properties.</remarks>
+        public static long XWF_GetVSProp(VolumeSnapshotPropertyType propertyType
             , SpecialItemType specialItemType = SpecialItemType.Ununsed)
         {
-            return ImportedMethods.XWF_GetVSProp(nPropType, specialItemType);
+            return ImportedMethods.XWF_GetVSProp(propertyType, specialItemType);
         }
 
+        /// <summary>
+        /// Retrieves all available properties of the current volume snapshot.  Available
+        /// in v17.4 and above.
+        /// </summary>
+        /// <returns>Returns the properties in a VolumeSnapshotProperties structure.
+        /// </returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static VolumeSnapshotProperties XWF_GetVSProps()
         {
-            VolumeSnapshotProperties props = new VolumeSnapshotProperties();
+            VolumeSnapshotProperties Properties = new VolumeSnapshotProperties();
 
-            props.rootDirectory = XWF_GetVSProp(VolumeSnapshotPropertyType.SpecialItemID
+            // Get the root directory.
+            Properties.rootDirectory = XWF_GetVSProp(
+                VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.RootDirectory);
-            props.pathUnknownDirectory = XWF_GetVSProp(
+            // Get the "Path Unknown" directory.
+            Properties.pathUnknownDirectory = XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.PathUnknownDirectory);
-            props.carvedFilesDirectory = XWF_GetVSProp(
+            // Get the "Carved Files" directory.
+            Properties.carvedFilesDirectory = XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.CarvedFilesDirectory);
-            props.freeSpaceFile = XWF_GetVSProp(VolumeSnapshotPropertyType.SpecialItemID
+            // Get the free space file.
+            Properties.freeSpaceFile = XWF_GetVSProp(
+                VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.FreeSpaceFile);
-            props.systemVolumeInformationDirectory = XWF_GetVSProp(
+            // Get the "System Volume Information" directory.
+            Properties.systemVolumeInformationDirectory = XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.SystemVolumeInformationDirectory);
-            props.windowsEDBFile = XWF_GetVSProp(
+            // Get the Windows EDB file.
+            Properties.windowsEDBFile = XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.WindowsEDBFile);
-            props.hashType1 = (HashType)XWF_GetVSProp
-                (VolumeSnapshotPropertyType.HashType1
+            // Get the first hash.
+            Properties.hashType1 = (HashType)XWF_GetVSProp(
+                VolumeSnapshotPropertyType.HashType1
                 , SpecialItemType.Ununsed);
-            props.hashType2 = (HashType)XWF_GetVSProp(
+            // Get the second hash.
+            Properties.hashType2 = (HashType)XWF_GetVSProp(
                 VolumeSnapshotPropertyType.HashType2
                 , SpecialItemType.Ununsed);
 
-            return props;
+            return Properties;
         }
 
         /// <summary>
@@ -724,6 +746,7 @@ namespace XTensions
         /// </summary>
         /// <returns>Returns the number of file and directories in the curent volume
         /// snapshot.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static uint XWF_GetItemCount()
         {
             return ImportedMethods.XWF_GetItemCount(IntPtr.Zero);
@@ -736,12 +759,13 @@ namespace XTensions
         /// specify -1 as the ID to get the total file count of the entire volume.
         /// Available from v17.7.
         /// </summary>
-        /// <param name="nDirID">The directory ID.</param>
+        /// <param name="directoryId">The directory ID.</param>
         /// <returns>Returns the accumulated number of all files under a provided
         /// directory or file and all it's subdirectories</returns>
-        public static uint XWF_GetFileCount(uint nDirID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static uint XWF_GetFileCount(uint directoryId)
         {
-            return ImportedMethods.XWF_GetFileCount(nDirID);
+            return ImportedMethods.XWF_GetFileCount(directoryId);
         }
 
         /// <summary>
@@ -755,14 +779,15 @@ namespace XTensions
         /// specify the file size using XWF_SetItemSize and the start offset via the
         /// nDefOfs parameter (must be negative) using XWF_SetItemOfs.
         /// </summary>
-        /// <param name="lpName">The name of the item.</param>
-        /// <param name="flags">Creation flags (XWFCreateItemFlags).</param>
+        /// <param name="itemName">The name of the item.</param>
+        /// <param name="options">Creation flags (XWFCreateItemFlags).</param>
         /// <returns>Returns the ID of the newly created item, or -1 if an error
         /// occurred (e.g. out of memory).</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static int XWF_CreateItem(
-            [MarshalAs(UnmanagedType.LPWStr)] string lpName, CreateItemOptions flags)
+            [MarshalAs(UnmanagedType.LPWStr)] string itemName, CreateItemOptions options)
         {
-            return ImportedMethods.XWF_CreateItem(lpName, flags);
+            return ImportedMethods.XWF_CreateItem(itemName, options);
         }
 
         /// <summary>
@@ -774,39 +799,44 @@ namespace XTensions
         /// XWF_SetItemInformation (not necessary when carving a file in a file).
         /// Available from v16.7.
         /// </summary>
-        /// <param name="lpName">The name that this file will have in the volume 
+        /// <param name="fileName">The name that this file will have in the volume 
         /// snapshot, which may be different from its source file name if you are
         /// attaching an external file.</param>
-        /// <param name="flags">Creation flags (XWFCreateFileFlags).</param>
-        /// <param name="nParentItemID">The file's parent ID, if needed.</param>
+        /// <param name="options">Creation flags (XWFCreateFileFlags).</param>
+        /// <param name="parentItemId">The file's parent ID, if needed.</param>
         /// <param name="pSourceInfo">More information about the source of the file's
         /// data. The exact meaning depends on the flags.</param>
-        /// <returns></returns>
+        /// <returns>Returns the Id of the newly created item or -1 if an error occurred.
+        /// </returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static int XWF_CreateFile(
-            [MarshalAs(UnmanagedType.LPWStr)] string lpName, CreateFileOptions flags
-            , int nParentItemID, IntPtr pSourceInfo)
+            [MarshalAs(UnmanagedType.LPWStr)] string fileName, CreateFileOptions options
+            , uint parentItemId, IntPtr sourceInformation)
         {
-            return ImportedMethods.XWF_CreateFile(lpName, flags, nParentItemID
-                , pSourceInfo);
+            return ImportedMethods.XWF_CreateFile(fileName, options, parentItemId
+                , sourceInformation);
         }
 
         /// <summary>
-        /// TODO: Implement get_path helper function.
         /// Retrieves a pointer to the null-terminated name of the specified item (file
         /// or directory) in UTF-16. You may call XWF_GetItemName and XWF_GetItemParent
         /// repeatedly until you reach the root directory and concatenate the results to
         /// get the full path of an item.
         /// </summary>
-        /// <param name="nItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <returns>Returns name of the item.</returns>
-        public static string XWF_GetItemName(int itemID)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Implement path builder helper method.
+        /// - Todo: Currently catching all exceptions; need to test further.</remarks>
+        public static string XWF_GetItemName(int itemId)
         {
             string result;
 
             try
             {
-                IntPtr temp = ImportedMethods.XWF_GetItemName(itemID);
-                result = Marshal.PtrToStringUni(temp);
+                IntPtr Buffer = ImportedMethods.XWF_GetItemName(itemId);
+                result = Marshal.PtrToStringUni(Buffer);
+                Marshal.FreeHGlobal(Buffer);
             }
             catch (Exception e)
             {
@@ -821,21 +851,23 @@ namespace XTensions
         /// Retrieves the size of the item (file or directory) in bytes, or -1 when the
         /// size is unknown.
         /// </summary>
-        /// <param name="nItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the size of the item, or -1 if unknown.</returns>
-        public static long XWF_GetItemSize(long itemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static long XWF_GetItemSize(long itemId)
         {
-            return ImportedMethods.XWF_GetItemSize(itemID);
+            return ImportedMethods.XWF_GetItemSize(itemId);
         }
 
         /// <summary>
         /// Sets the size of the item in bytes, using -1 when the size is unknown.
         /// </summary>
-        /// <param name="nItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <param name="size">The size of the item, or -1 if unknown.</param>
-        public static void XWF_SetItemSize(int nItemID, int size)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static void XWF_SetItemSize(int itemId, int size)
         {
-            ImportedMethods.XWF_SetItemSize(nItemID, size);
+            ImportedMethods.XWF_SetItemSize(itemId, size);
         }
 
         /// <summary>
@@ -845,57 +877,59 @@ namespace XTensions
         /// 0xFFFFFFFF if not available/not applicable. Also retrieves the number of the 
         /// sector from the point of the volume in which the data of the item starts.
         /// </summary>
-        /// <param name="nItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <returns>Returns XWFItemOffsets struct with the relative offsets.</returns>
-        public static ItemOffsets XWF_GetItemOfs(int ItemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static ItemOffsets XWF_GetItemOfs(int itemId)
         {
-            long itemOffset, startSector;
-            ItemOffsets itemOffsets = new ItemOffsets();
+            long ItemOffset, StartSector;
+            ItemOffsets ItemOffsets = new ItemOffsets();
 
-            ImportedMethods.XWF_GetItemOfs(ItemID, out itemOffset, out startSector);
+            ImportedMethods.XWF_GetItemOfs(itemId, out ItemOffset, out StartSector);
 
-            if (itemOffset >= 0)
+            if (ItemOffset >= 0)
             {
-                itemOffsets.FileSystemDataStructureOffset = itemOffset;
-                itemOffsets.CarvedFileVolumeOffset = -1;
+                ItemOffsets.FileSystemDataStructureOffset = ItemOffset;
+                ItemOffsets.CarvedFileVolumeOffset = -1;
             }
             else
             {
-                itemOffsets.FileSystemDataStructureOffset = -1;
-                itemOffsets.CarvedFileVolumeOffset = Math.Abs(itemOffset);
+                ItemOffsets.FileSystemDataStructureOffset = -1;
+                ItemOffsets.CarvedFileVolumeOffset = Math.Abs(ItemOffset);
             }
 
-            itemOffsets.DataStartSector = startSector;
+            ItemOffsets.DataStartSector = StartSector;
 
-            return itemOffsets;
+            return ItemOffsets;
         }
 
         /// <summary>
         /// Sets the offset and data sector start of a given item.
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
-        /// <param name="ItemOffsets">A ItemOffsets struct with the offsets to use.
+        /// <param name="ItemId">The item ID.</param>
+        /// <param name="itemOffsets">A ItemOffsets struct with the offsets to use.
         /// </param>
         /// <returns>Returns true if successful, otherwise false.</returns>
-        public static bool XWF_SetItemOfs(int ItemID, ItemOffsets ItemOffsets)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static bool XWF_SetItemOfs(int ItemId, ItemOffsets itemOffsets)
         {
             long itemOffset;
 
-            if (ItemOffsets.FileSystemDataStructureOffset != -1)
+            if (itemOffsets.FileSystemDataStructureOffset != -1)
             {
-                itemOffset = ItemOffsets.FileSystemDataStructureOffset;
+                itemOffset = itemOffsets.FileSystemDataStructureOffset;
             }
-            else if (ItemOffsets.CarvedFileVolumeOffset != -1)
+            else if (itemOffsets.CarvedFileVolumeOffset != -1)
             {
-                itemOffset = ItemOffsets.CarvedFileVolumeOffset * -1;
+                itemOffset = itemOffsets.CarvedFileVolumeOffset * -1;
             }
             else
             {
                 return false;
             }
 
-            ImportedMethods.XWF_SetItemOfs(ItemID, itemOffset
-                , ItemOffsets.DataStartSector);
+            ImportedMethods.XWF_SetItemOfs(ItemId, itemOffset
+                , itemOffsets.DataStartSector);
 
             return true;
         }
@@ -905,85 +939,100 @@ namespace XTensions
         /// volume snapshot, such as the original ID or attributes that the item had in 
         /// its defining file system.
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
+        /// <param name="itemId">The item Id.</param>
         /// <returns>Returns ItemInformation struct with the given item's information.
         /// </returns>
-        public static ItemInformation XWF_GetItemInformation(int ItemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static ItemInformation XWF_GetItemInformation(int itemId)
         {
-            ItemInformation info = new ItemInformation();
-            bool bStatus;
+            ItemInformation Information = new ItemInformation();
+            bool Status;
 
-            info.OriginalItemID = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_ORIG_ID, out bStatus);
+            // Get the original Id.
+            Information.OriginalItemID = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_ORIG_ID, out Status);
 
-            info.Attributes = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_ATTR, out bStatus);
+            // Get the attributes.
+            Information.Attributes = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_ATTR, out Status);
 
-            info.Flags = (ItemInformationOptions)
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_FLAGS, out bStatus);
+            // Get the flags.
+            Information.Flags = (ItemInformationOptions)
+                ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_FLAGS, out Status);
 
-            info.Deletion = (ItemDeletionStatus)
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                    , ItemInformationType.XWF_ITEM_INFO_DELETION, out bStatus);
+            // Get the deletion information.
+            Information.Deletion = (ItemDeletionStatus)
+                ImportedMethods.XWF_GetItemInformation(itemId
+                    , ItemInformationType.XWF_ITEM_INFO_DELETION, out Status);
 
-            info.Classification = (ItemClassifiction)
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                    , ItemInformationType.XWF_ITEM_INFO_CLASSIFICATION, out bStatus);
+            // Get the classification.
+            Information.Classification = (ItemClassifiction)
+                ImportedMethods.XWF_GetItemInformation(itemId
+                    , ItemInformationType.XWF_ITEM_INFO_CLASSIFICATION, out Status);
 
-            info.LinkCount = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_LINKCOUNT, out bStatus);
+            // Get the link count.
+            Information.LinkCount = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_LINKCOUNT, out Status);
 
-            info.ColorAnalysis = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_COLORANALYSIS, out bStatus);
+            // Get the color analysis.
+            Information.ColorAnalysis = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_COLORANALYSIS, out Status);
 
-            info.FileCount = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_FILECOUNT, out bStatus);
+            // Get the file count.
+            Information.FileCount = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_FILECOUNT, out Status);
 
-            info.EmbeddedOffset = ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_EMBEDDEDOFFSET, out bStatus);
+            // Get the embedded offset.
+            Information.EmbeddedOffset = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_EMBEDDEDOFFSET, out Status);
 
-            info.CreationTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_CREATIONTIME, out bStatus));
+            // Get the creation time.
+            Information.CreationTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_CREATIONTIME, out Status));
 
-            info.ModificationTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_MODIFICATIONTIME, out bStatus));
+            // Get the modification time.
+            Information.ModificationTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_MODIFICATIONTIME, out Status));
 
-            info.LastAccessTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_LASTACCESSTIME, out bStatus));
+            // Get the last access time.
+            Information.LastAccessTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_LASTACCESSTIME, out Status));
 
-            info.EntryModificationTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
+            // Get the entry modification time.
+            Information.EntryModificationTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
                 , ItemInformationType.XWF_ITEM_INFO_ENTRYMODIFICATIONTIME
-                , out bStatus));
+                , out Status));
 
-            info.DeletionTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
-                , ItemInformationType.XWF_ITEM_INFO_DELETIONTIME, out bStatus));
+            // Get the deletion time.
+            Information.DeletionTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.XWF_ITEM_INFO_DELETIONTIME, out Status));
 
-            info.InternalCreationTime = DateTime.FromFileTime(
-                ImportedMethods.XWF_GetItemInformation(ItemID
+            // Get the internal creation time.
+            Information.InternalCreationTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetItemInformation(itemId
                 , ItemInformationType.XWF_ITEM_INFO_INTERNALCREATIONTIME
-                , out bStatus));
+                , out Status));
 
-            return info;
+            return Information;
         }
 
-        public static bool XWF_SetItemInformation(int ItemID
-            , ItemInformationType nInfoType, long nInfoValue)
+        /// <summary>
+        /// Sets information about an item (file or directory) in the volume snapshot.
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="informationType"></param>
+        /// <param name="informationValue"></param>
+        /// <remarks>Todo: Everything!</remarks>
+        public static void XWF_SetItemInformation(int itemId
+            , ItemInformationType informationType, long informationValue)
         {
-            return false;
         }
-
-        /*
-        public static XWFItemType XWF_GetItemType(int ItemID)
-        {
-            return ImportedMethods.XWF_GetItemType(ItemID, IntPtr.Zero, 0);
-        }
-        */
 
         /// <summary>
         /// Retrieves a textual description of the type of the specified file and 
@@ -992,10 +1041,11 @@ namespace XTensions
         /// 4 = not confirmed, 5 = newly identified, 6 (v18.8 and later only) = mismatch
         /// detected. ­1 means error.
         /// </summary>
-        /// <param name="itemID">The item ID.</param>
+        /// <param name="itemId">The item Id.</param>
         /// <returns>Returns a ItemType structure with the file type and description.
         /// </returns>
-        public static ItemType XWF_GetItemType(int itemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static ItemType XWF_GetItemType(int itemId)
         {
             ItemType Results = new ItemType();
 
@@ -1003,7 +1053,7 @@ namespace XTensions
             IntPtr bufferPtr = Marshal.AllocHGlobal(_itemTypeDescriptionBufferLength);
 
             // Get the results from the API function, including the type description.
-            Results.Type = ImportedMethods.XWF_GetItemType(itemID, bufferPtr
+            Results.Type = ImportedMethods.XWF_GetItemType(itemId, bufferPtr
                 , _itemTypeDescriptionBufferLength);
             Results.Description = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
@@ -1011,12 +1061,23 @@ namespace XTensions
             return Results;
         }
 
-        public static bool XWF_SetItemType(int nItemID, string sTypeDescr
-            , ItemTypeCategory nItemType)
+        /// <summary>
+        /// Sets a description of the type of the specified file (or specify NULL if not 
+        /// required) and information about the status of the type detection of the file.
+        /// </summary>
+        /// <param name="itemId">The item Id.</param>
+        /// <param name="typeDescription">A type description.</param>
+        /// <param name="itemType">The item type category.</param>
+        /// <returns></returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Catching all exceptions; need to investigate possibilities.
+        /// - Todo: Convert to static method.</remarks>
+        public static bool XWF_SetItemType(int itemId, string typeDescription
+            , ItemTypeCategory itemType)
         {
             try
             {
-                ImportedMethods.XWF_SetItemType(nItemID, sTypeDescr, nItemType);
+                ImportedMethods.XWF_SetItemType(itemId, typeDescription, itemType);
             }
             catch (Exception e)
             {
@@ -1031,25 +1092,29 @@ namespace XTensions
         /// Returns the ID of the parent of the specified item, or -1 if the item is the 
         /// root directory or if for some strange reason no parent object is assigned.
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the parent ID of the given item, or -1 if there is none.
         /// </returns>
-        public static int XWF_GetItemParent(int ItemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static int XWF_GetItemParent(int itemId)
         {
-            return ImportedMethods.XWF_GetItemParent(ItemID);
+            return ImportedMethods.XWF_GetItemParent(itemId);
         }
 
         /// <summary>
-        /// Sets the parent (by the given ID) of the given child item.
+        /// Sets the parent of a given child item.
         /// </summary>
-        /// <param name="ChildItemID">The child ID.</param>
-        /// <param name="ParentItemID">The parent ID.</param>
+        /// <param name="childItemID">The child ID.</param>
+        /// <param name="parentItemID">The parent ID.</param>
         /// <returns>Return true is successful, otherwise false.</returns>
-        public static bool XWF_SetItemParent(int ChildItemID, int ParentItemID)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Catching all exceptions; need to invetigate possibilities.
+        /// - Todo: What happens when invalid child or parents is given?</remarks>
+        public static bool XWF_SetItemParent(int childItemID, int parentItemID)
         {
             try
             {
-                ImportedMethods.XWF_SetItemParent(ChildItemID, ParentItemID);
+                ImportedMethods.XWF_SetItemParent(childItemID, parentItemID);
             }
             catch (Exception e)
             {
