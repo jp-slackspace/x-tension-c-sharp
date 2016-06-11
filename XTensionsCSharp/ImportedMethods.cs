@@ -295,7 +295,7 @@ namespace XTensions
         public delegate void XWFOutputMessageDelegate(
               [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
             , OutputMessageOptions nFlags = 0);
-        public static XWFOutputMessageDelegate XWF_OutputMessage;
+        public static XWFOutputMessageDelegate OutputMessage;
 
         public delegate void XWFShowProgressDelegate(
               [MarshalAs(UnmanagedType.LPWStr)] string lpCaption
@@ -579,8 +579,8 @@ namespace XTensions
                 XWF_CloseContainer = GetMethodDelegate<XWFCloseContainerDelegate>(
                     moduleHandle, "XWF_CloseContainer");
 
-                XWF_OutputMessage = GetMethodDelegate<XWFOutputMessageDelegate>(
-                    moduleHandle, "XWF_OutputMessage");
+                OutputMessage = GetMethodDelegate<XWFOutputMessageDelegate>(
+                    moduleHandle, "OutputMessage");
 
                 XWF_ShowProgress = GetMethodDelegate<XWFShowProgressDelegate>(
                     moduleHandle, "XWF_ShowProgress");
@@ -601,7 +601,7 @@ namespace XTensions
             }
             catch(Exception e)
             {
-                HelperMethods.XWF_OutputMessage("Exception: " + e);
+                HelperMethods.OutputMessage("Exception: " + e);
                 return false;
             }
 

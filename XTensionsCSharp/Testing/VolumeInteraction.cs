@@ -12,71 +12,71 @@ namespace XTensions.Testing
         /// <returns></returns>
         public static void RunTest(IntPtr hVolume, XTensionActionSource nOpType)
         {
-            HelperMethods.XWF_OutputHeader("VOLUME INTERACTION TESTING MODULE"
+            HelperMethods.OutputHeader("VOLUME INTERACTION TESTING MODULE"
                 , OutputMessageLevel.Level1);
 
             // XWF_GetSize() test.
-            HelperMethods.XWF_OutputHeader("XWF_GetSize() Test"
+            HelperMethods.OutputHeader("XWF_GetSize() Test"
                 , OutputMessageLevel.Level2);
 
-            var itemPhysicalSize = HelperMethods.XWF_GetSize(hVolume
+            var itemPhysicalSize = HelperMethods.GetSize(hVolume
                 , ItemSizeType.PhysicalSize);
-            HelperMethods.XWF_OutputMessage("Volume Physical Size: "
+            HelperMethods.OutputMessage("Volume Physical Size: "
                 + itemPhysicalSize, OutputMessageLevel.Level3);
 
-            var itemLogicalSize = HelperMethods.XWF_GetSize(hVolume
+            var itemLogicalSize = HelperMethods.GetSize(hVolume
                 , ItemSizeType.LogicalSize);
-            HelperMethods.XWF_OutputMessage("Volume Logical Size: "
+            HelperMethods.OutputMessage("Volume Logical Size: "
                 + itemLogicalSize, OutputMessageLevel.Level3);
 
-            var itemValidDateLength = HelperMethods.XWF_GetSize(hVolume
+            var itemValidDateLength = HelperMethods.GetSize(hVolume
                 , ItemSizeType.ValidDataLength);
-            HelperMethods.XWF_OutputMessage("Volume Valid Data Length: "
+            HelperMethods.OutputMessage("Volume Valid Data Length: "
                 + itemValidDateLength, OutputMessageLevel.Level3);
 
-            HelperMethods.XWF_OutputEmptyLine();
+            HelperMethods.OutputEmptyLine();
 
             // XWF_GetVolumeName() test.
             // TODO: Find out what the different types are exactly.
-            HelperMethods.XWF_OutputHeader("XWF_GetVolumeName() Test"
+            HelperMethods.OutputHeader("XWF_GetVolumeName() Test"
                 , OutputMessageLevel.Level2);
 
-            string type1VolumeName = HelperMethods.XWF_GetVolumeName(hVolume
+            string type1VolumeName = HelperMethods.GetVolumeName(hVolume
                 , VolumeNameType.Type1);
-            HelperMethods.XWF_OutputMessage("Type 1 Volume Name: " + type1VolumeName
+            HelperMethods.OutputMessage("Type 1 Volume Name: " + type1VolumeName
                 , OutputMessageLevel.Level3);
 
-            string type2VolumeName = HelperMethods.XWF_GetVolumeName(hVolume
+            string type2VolumeName = HelperMethods.GetVolumeName(hVolume
                 , VolumeNameType.Type2);
-            HelperMethods.XWF_OutputMessage("Type 2 Volume Name: " + type2VolumeName
+            HelperMethods.OutputMessage("Type 2 Volume Name: " + type2VolumeName
                 , OutputMessageLevel.Level3);
 
-            string type3VolumeName = HelperMethods.XWF_GetVolumeName(hVolume
+            string type3VolumeName = HelperMethods.GetVolumeName(hVolume
                 , VolumeNameType.Type3);
-            HelperMethods.XWF_OutputMessage("Type 3 Volume Name: " + type3VolumeName
+            HelperMethods.OutputMessage("Type 3 Volume Name: " + type3VolumeName
                 , OutputMessageLevel.Level3);
 
-            HelperMethods.XWF_OutputEmptyLine();
+            HelperMethods.OutputEmptyLine();
 
             // XWF_GetVolumeInformation() test.
-            HelperMethods.XWF_OutputHeader("XWF_GetVolumeInformation() Test"
+            HelperMethods.OutputHeader("XWF_GetVolumeInformation() Test"
                 , OutputMessageLevel.Level2);
 
             VolumeInformation volumeInformation
-                = HelperMethods.XWF_GetVolumeInformation(hVolume);
+                = HelperMethods.GetVolumeInformation(hVolume);
 
-            HelperMethods.XWF_OutputMessage("File System: "
+            HelperMethods.OutputMessage("File System: "
                 + volumeInformation.FileSystem, OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("Bytes/Sector: "
+            HelperMethods.OutputMessage("Bytes/Sector: "
                 + volumeInformation.BytesPerSector, OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("Sectors/Cluster: "
+            HelperMethods.OutputMessage("Sectors/Cluster: "
                 + volumeInformation.SectorsPerCluster, OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("Cluster Count: "
+            HelperMethods.OutputMessage("Cluster Count: "
                 + volumeInformation.ClusterCount, OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("First Cluster Sector Number: "
+            HelperMethods.OutputMessage("First Cluster Sector Number: "
                 + volumeInformation.FirstClusterSectorNumber, OutputMessageLevel.Level3);
 
-            HelperMethods.XWF_OutputEmptyLine();
+            HelperMethods.OutputEmptyLine();
         }
     }
 }

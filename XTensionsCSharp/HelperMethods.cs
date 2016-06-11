@@ -15,14 +15,15 @@ namespace XTensions
         private static readonly int _eventObjectPropertiesLength = 128 * 2;
 
         /// <summary>
-        /// Retrieve the size of the provided volume or file.
+        /// Retrieve the size of the provided volume or file.  A helper method for 
+        /// XWF_GetSize().
         /// </summary>
         /// <param name="volumeOrItem">A pointer to a volume or item.</param>
         /// <param name="sizeType">The type (XWFGetSizeType) of size to retrieve.
         /// </param>
         /// <returns>Returns the size of the volume or file.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static long XWF_GetSize(IntPtr volumeOrItem, ItemSizeType sizeType
+        public static long GetSize(IntPtr volumeOrItem, ItemSizeType sizeType
             = ItemSizeType.PhysicalSize)
         {
             // Fail if a volume or item pointer weren't provided.
@@ -34,15 +35,15 @@ namespace XTensions
 
         /// <summary>
         /// Retrieves the UTF-16 name of the provided volume, using 255 characters at 
-        /// most.
+        /// most. A helper method for XWF_GetVolumeName().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
         /// <param name="volumeNameType">The volume name type (XWFVolumeNameType) to
         /// return.</param>
         /// <returns>Returns the volume name in the type specified.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static string XWF_GetVolumeName(IntPtr volume
-            , VolumeNameType volumeNameType = VolumeNameType.Type1)
+        public static string GetVolumeName(IntPtr volume, VolumeNameType volumeNameType 
+            = VolumeNameType.Type1)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
@@ -52,20 +53,21 @@ namespace XTensions
             // get volume name, and clean up.
             IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
             ImportedMethods.XWF_GetVolumeName(volume, Buffer, volumeNameType);
-            string str = Marshal.PtrToStringUni(Buffer);
+            string VolumeName = Marshal.PtrToStringUni(Buffer);
             Marshal.FreeHGlobal(Buffer);
 
-            return str;
+            return VolumeName;
         }
 
         /// <summary>
-        /// Retrieves various information about a given volume.
+        /// Retrieves various information about a given volume. A helper method for 
+        /// XWF_GetVolumeInformation().
         /// </summary>
-        /// <param name="hVolume">A pointer to a volume.</param>
+        /// <param name="volume">A pointer to a volume.</param>
         /// <returns>Returns the volume information in a VolumeInformation struct.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static VolumeInformation XWF_GetVolumeInformation(IntPtr volume)
+        public static VolumeInformation GetVolumeInformation(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
@@ -82,29 +84,31 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Retrieves the boundaries of the currently selected block, if any.
+        /// Retrieves the boundaries of the currently selected block, if any. A helper 
+        /// method for XWF_GetBlock().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
         /// <returns>Returns the block boundaries in a BlockBoundaries struct.  These 
         /// boundaries will be 0 and -1 respectively if no block is selected.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static BlockBoundaries XWF_GetBlock(IntPtr volume)
+        public static BlockBoundaries GetBlock(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
                 "Zero volume pointer provided.");
 
-            BlockBoundaries boundaries = new BlockBoundaries();
+            BlockBoundaries Boundaries = new BlockBoundaries();
 
             // Call the API function, getting the block's boundaries.
-            bool result = ImportedMethods.XWF_GetBlock(volume
-                , out boundaries.StartOffset, out boundaries.EndOffset);
+            bool Result = ImportedMethods.XWF_GetBlock(volume
+                , out Boundaries.StartOffset, out Boundaries.EndOffset);
 
-            return boundaries;
+            return Boundaries;
         }
 
         /// <summary>
-        /// Set the boundaries (provided as a BlockBoundaries struct) of a new block.
+        /// Set the boundaries (provided as a BlockBoundaries struct) of a new block. A
+        /// helper method for XWF_SetBlock().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
         /// <param name="boundaries">A BlockBoundaries struct indicating the starting
@@ -112,7 +116,7 @@ namespace XTensions
         /// <returns>Returns True if successful and False if the provided boundaries 
         /// exceed the size of the volume.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static bool XWF_SetBlock(IntPtr volume, BlockBoundaries boundaries)
+        public static bool SetBlock(IntPtr volume, BlockBoundaries boundaries)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
@@ -127,27 +131,28 @@ namespace XTensions
         /// Clear an existing block.
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static bool XWF_ClearBlock(IntPtr volume)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Need thorough testing.</remarks>
+        public static void ClearBlock(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
                 "Zero volume pointer provided.");
 
             // Return results of API call to clear the block.
-            return ImportedMethods.XWF_SetBlock(volume, 0
-                , -1);
+            ImportedMethods.XWF_SetBlock(volume, 0, -1);
         }
 
         /// <summary>
-        /// Retrieves information about a provided sector.
+        /// Retrieves information about a provided sector. A helper method for 
+        /// XWF_GetSectorContents().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
         /// <param name="sectorNumber">The sector number.</param>
         /// <returns>Returns the sector information in a SectorInformation struct.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static SectorInformation XWF_GetSectorContents(IntPtr volume
+        public static SectorInformation GetSectorContents(IntPtr volume
             , long sectorNumber)
         {
             // Fail if a volume pointer wasn't provided.
@@ -172,16 +177,18 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Opens the provided item for reading. Available in v16.5 and later.
+        /// Opens the provided item for reading. Available in v16.5 and later. A helper
+        /// method for XWF_OpenItem().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
         /// <param name="itemId">The item's Id.</param>
         /// <param name="options">Options for opening, using ItemOpenModes flag.</param>
         /// <returns>Returns a handle to the open item, or IntPtr.Zero if unsuccessful
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static IntPtr XWF_OpenItem(IntPtr volume, long itemId
-            , ItemOpenModes options = ItemOpenModes.LogicalContents)
+        /// <remarks>Version 1.0 coding complete.
+        /// Todo: Investigate exceptions better.</remarks>
+        public static IntPtr OpenItem(IntPtr volume, long itemId, ItemOpenModes options 
+            = ItemOpenModes.LogicalContents)
         {
             // Fail if a volume pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
@@ -193,20 +200,20 @@ namespace XTensions
             }
             catch (System.AccessViolationException e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return IntPtr.Zero;
             }
         }
 
         /// <summary>
-        /// Closes a volume that was opened with the XWF_OpenVolume function or an item 
-        /// that was opened with the XWF_OpenItem function. Available in v16.5 and
-        /// later.
+        /// Closes a volume or an item that was opened with the OpenItem method. 
+        /// Available in v16.5 and later. A helper method for XWF_Close().
         /// </summary>
         /// <param name="volumeOrItem">An open volume or item.</param>
         /// <returns>Returns true if a successfull, otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static bool XWF_Close(IntPtr volumeOrItem)
+        /// <remarks>Version 1.0 coding complete.
+        /// Todo: Can we use volume/item interchangably in these circumstances?</remarks>
+        public static bool CloseItem(IntPtr volumeOrItem)
         {
             // Fail if a volume or item pointer weren't provided.
             if (volumeOrItem == IntPtr.Zero) throw new ArgumentException(
@@ -218,16 +225,16 @@ namespace XTensions
 
         /// <summary>
         /// Reads the specified number of bytes from a specified position in a specified 
-        /// item.
+        /// item. A helper method for XWF_Read().
         /// </summary>
         /// <param name="volumeOrItem">A pointer to a volume or item.</param>
         /// <param name="offset">The offset to read from.</param>
         /// <param name="numberOfBytesToRead">The number of bytes to read.</param>
         /// <returns>Returns a byte array of the bytes read.</returns>
         /// <remarks>Version 1.0 coding complete. 
-        /// - Todo: Does XWF_Read really need to use a DWORD (uint) for number of bytes to 
-        /// read?</remarks>
-        public static byte[] XWF_Read(IntPtr volumeOrItem, long offset = 0
+        /// - Todo: Does XWF_Read really need to use a DWORD (uint) for number of bytes 
+        /// to read?</remarks>
+        public static byte[] Read(IntPtr volumeOrItem, long offset = 0
             , int numberOfBytesToRead = 0)
         {
             // Fail if a volume or item pointer weren't provided.
@@ -238,7 +245,7 @@ namespace XTensions
             // bytes to read is 0.
             if (numberOfBytesToRead == 0)
             {
-                numberOfBytesToRead = (int)(XWF_GetSize(volumeOrItem
+                numberOfBytesToRead = (int)(GetSize(volumeOrItem
                     , ItemSizeType.PhysicalSize) - offset);
             }
 
@@ -258,78 +265,79 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Retrieves information about the current case.
+        /// Retrieves information about the current case. A helper method for 
+        /// XWF_GetCaseProps().
         /// </summary>
         /// <returns>Returns a CaseProperties structure.</returns>
         /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Need to handle when -1 is returned from API call; indicating that no case
-        /// is loaded.</remarks>
-        public static CaseProperties XWF_GetCaseProps()
+        /// - Todo: Need to handle when -1 is returned from API call; indicating that no 
+        /// case is loaded.</remarks>
+        public static CaseProperties GetCaseProperties()
         {
-            CaseProperties props = new CaseProperties();
+            CaseProperties Properties = new CaseProperties();
 
             // Read the title.
-            int bufferSize = (int)_casePropertiesLength;
-            IntPtr bufferPtr = Marshal.AllocHGlobal(bufferSize);
+            IntPtr Buffer = Marshal.AllocHGlobal(_casePropertiesLength);
             ImportedMethods.XWF_GetCaseProp(IntPtr.Zero, (int)CasePropertyType.CaseTitle
-                , bufferPtr, bufferSize);
-            props.CaseTitle = Marshal.PtrToStringUni(bufferPtr);
-            Marshal.FreeHGlobal(bufferPtr);
+                , Buffer, _casePropertiesLength);
+            Properties.CaseTitle = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
             // Read the examiner.
-            bufferPtr = Marshal.AllocHGlobal(bufferSize);
+            Buffer = Marshal.AllocHGlobal(_casePropertiesLength);
             ImportedMethods.XWF_GetCaseProp(IntPtr.Zero
-                , (int)CasePropertyType.CaseExaminer, bufferPtr, bufferSize);
-            props.CaseExaminer = Marshal.PtrToStringUni(bufferPtr);
-            Marshal.FreeHGlobal(bufferPtr);
+                , (int)CasePropertyType.CaseExaminer, Buffer, _casePropertiesLength);
+            Properties.CaseExaminer = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
             // Read the case file path.
-            bufferPtr = Marshal.AllocHGlobal(bufferSize);
+            Buffer = Marshal.AllocHGlobal(_casePropertiesLength);
             ImportedMethods.XWF_GetCaseProp(IntPtr.Zero
-                , (int)CasePropertyType.CaseFilePath, bufferPtr, bufferSize);
-            props.CaseFilePath = Marshal.PtrToStringUni(bufferPtr);
-            Marshal.FreeHGlobal(bufferPtr);
+                , (int)CasePropertyType.CaseFilePath, Buffer, _casePropertiesLength);
+            Properties.CaseFilePath = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
             // Read the case directory.
-            bufferPtr = Marshal.AllocHGlobal(bufferSize);
+            Buffer = Marshal.AllocHGlobal(_casePropertiesLength);
             ImportedMethods.XWF_GetCaseProp(IntPtr.Zero
-                , (int)CasePropertyType.CaseDirectory, bufferPtr, bufferSize);
-            props.CaseDirectory = Marshal.PtrToStringUni(bufferPtr);
-            Marshal.FreeHGlobal(bufferPtr);
+                , (int)CasePropertyType.CaseDirectory, Buffer, _casePropertiesLength);
+            Properties.CaseDirectory = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
-            return props;
+            return Properties;
         }
 
         /// <summary>
         /// Retrieves a handle to the first evidence object in the case. In conjunction
         /// with XWF_GetNextEvObj this function allows to enumerate all evidence objects
-        /// of the case. Available from v17.6.
+        /// of the case. Available from v17.6. A helper method for XWF_GetFirstEvObj().
         /// </summary>
         /// <returns>Returns a pointer to the first evidence objector, or NULL if the 
         /// active case has no evidence objects or (in releases from June 2016) if no 
         /// case is active.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static IntPtr XWF_GetFirstEvObj()
+        public static IntPtr GetFirstEvidenceObject()
         {
             return ImportedMethods.XWF_GetFirstEvObj(IntPtr.Zero);
         }
 
         /// <summary>
         /// Given a pointer to the previous evidence object, retrieves the next evidence
-        /// object in the chain. Available from v17.6.
+        /// object in the chain. Available from v17.6. A helper method for 
+        /// XWF_GetNextEvObj().
         /// </summary>
-        /// <param name="hPrevEvidence">Previous evidence object.</param>
+        /// <param name="previousEvidence">Previous evidence object.</param>
         /// <returns>Returns a pointer to the next evidence object.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static IntPtr XWF_GetNextEvObj(IntPtr PreviousEvidence)
+        public static IntPtr GetNextEvidenceObject(IntPtr previousEvidence)
         {
             // Handle case where zero pointer is provided.
-            if (PreviousEvidence == IntPtr.Zero)
+            if (previousEvidence == IntPtr.Zero)
             {
                 return IntPtr.Zero;
             }
 
-            return ImportedMethods.XWF_GetNextEvObj(PreviousEvidence, IntPtr.Zero);
+            return ImportedMethods.XWF_GetNextEvObj(previousEvidence, IntPtr.Zero);
         }
 
         /*
@@ -350,17 +358,17 @@ namespace XTensions
         /// disk/volume image, memory dump, or a directory/path). A case must already be 
         /// loaded. If more than 1 evidence object is created (for example for a physical 
         /// disk that contains partitions, which count as evidence objects themselves), 
-        /// use XWF_GetNextEvObj to find them. Available in v16.5 and
-        /// later.
+        /// use XWF_GetNextEvObj to find them. Available in v16.5 and later. A helper 
+        /// method for XWF_CreateEvObj().
         /// </summary>
-        /// <param name="EvidenceType">The evidence object type.</param>
+        /// <param name="evidenceType">The evidence object type.</param>
         /// <param name="objectPath">Path in case of a file or directory, otherwise NULL.
         /// </param>
         /// <returns>Returns the first evidence object created, or NULL in case of an
         /// error.</returns>
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Not sure a marshalled type is needed in the parameters.</remarks>
-        public static IntPtr XWF_CreateEvObj(EvidenceObjectType evidenceType
+        public static IntPtr CreateEvidenceObject(EvidenceObjectType evidenceType
             , [MarshalAs(UnmanagedType.LPWStr)] string objectPath = null)
         {
             // Make sure a path was provided if one is expected.
@@ -410,60 +418,64 @@ namespace XTensions
         /// evidence object represents. Use this function if you wish to read data from 
         /// the volume or process the volume snapshot. Potentially time-consuming. 
         /// Available from v17.6. Options must be EvidenceOpenOptions.None in v18.0 and 
-        /// older.
+        /// older. A helper method for XWF_OpenEvObj().
         /// </summary>
         /// <param name="evidence">A pointer to the evidence object.</param>
         /// <param name="options">EvidenceOpenOptions open options.</param>
         /// <returns>Returns a handle to the volume that the evidence object represents 
         /// or returns 0 if unsuccessful.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static IntPtr XWF_OpenEvObj(IntPtr evidence, EvidenceOpenOptions options)
+        public static IntPtr OpenEvidenceObject(IntPtr evidence
+            , EvidenceOpenOptions options)
         {
             return ImportedMethods.XWF_OpenEvObj(evidence, options);
         }
 
         /// <summary>
         /// Closes the specified evidence object if it is open currently and unloads the
-        /// volume snapshot, otherwise does nothing. Available from v17.6.
+        /// volume snapshot, otherwise does nothing. Available from v17.6. A helper 
+        /// method for XWF_CloseEvObj().
         /// </summary>
         /// <param name="evidence">The evidence object to close.</param>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static void XWF_CloseEvObj(IntPtr evidence)
+        public static void CloseEvidenceObject(IntPtr evidence)
         {
             ImportedMethods.XWF_CloseEvObj(evidence);
         }
 
         /// <summary>
         /// Retrieves information about the specified evidence object. Does not require
-        /// that the evidence object be open. Available from v17.6.
+        /// that the evidence object be open. Available from v17.6. A helper method for
+        /// XWF_GetEvObjProp().
         /// </summary>
         /// <param name="evidence">A pointer to the evidence object.</param>
         /// <returns>Returns a EvidenceObjectProperites struct.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static EvidenceObjectProperties XWF_GetEvObjProp(IntPtr evidence)
+        public static EvidenceObjectProperties GetEvidenceObjectProperties(
+            IntPtr evidence)
         {
             // Fail if an evidence pointer wasn't provided.
             if (evidence == IntPtr.Zero) throw new ArgumentException(
                 "Zero evidence pointer provided.");
 
-            EvidenceObjectProperties props = new EvidenceObjectProperties();
+            EvidenceObjectProperties Properties = new EvidenceObjectProperties();
 
             // Get the object number.
-            props.objectNumber = ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.objectNumber = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.EvidenceObjectNumber, IntPtr.Zero);
 
             // Get the object ID.
-            props.objectID = ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.objectID = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.EvidenceObjectID, IntPtr.Zero);
 
             // Get the parent object ID.
-            props.parentObjectID = ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.parentObjectID = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ParentEvidenceObjectID, IntPtr.Zero);
 
             // Get the title.
             long tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.Title, IntPtr.Zero);
-            props.title = Marshal.PtrToStringUni((IntPtr)tmpPtr);
+            Properties.title = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Initialize the buffer for later use.
             int bufferSize = _eventObjectPropertiesLength;
@@ -473,70 +485,70 @@ namespace XTensions
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
             ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ExtendedTitle, bufferPtr);
-            props.extendedTitle = Marshal.PtrToStringUni(bufferPtr);
+            Properties.extendedTitle = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the abbreviated title.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
             ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.AbbreviatedTitle, bufferPtr);
-            props.abbreviatedTitle = Marshal.PtrToStringUni(bufferPtr);
+            Properties.abbreviatedTitle = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the internal name.
             tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.InternalName, IntPtr.Zero);
-            props.internalName = Marshal.PtrToStringUni((IntPtr)tmpPtr);
+            Properties.internalName = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the description.
             tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.Description, IntPtr.Zero);
-            props.description = Marshal.PtrToStringUni((IntPtr)tmpPtr);
+            Properties.description = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the examiner comments.
             tmpPtr = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.ExaminerComments, IntPtr.Zero);
-            props.examinerComments = Marshal.PtrToStringUni((IntPtr)tmpPtr);
+            Properties.examinerComments = Marshal.PtrToStringUni((IntPtr)tmpPtr);
 
             // Get the internally used directory.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
             ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.InternallyUsedDirectory, bufferPtr);
-            props.internallyUsedDirectory = Marshal.PtrToStringUni(bufferPtr);
+            Properties.internallyUsedDirectory = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the output directory.
             bufferPtr = Marshal.AllocHGlobal(bufferSize);
             ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.OutputDirectory, bufferPtr);
-            props.outputDirectory = Marshal.PtrToStringUni(bufferPtr);
+            Properties.outputDirectory = Marshal.PtrToStringUni(bufferPtr);
             Marshal.FreeHGlobal(bufferPtr);
 
             // Get the size in bytes.
-            props.SizeInBytes = ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.SizeInBytes = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.SizeInBytes, IntPtr.Zero);
 
             // Get the volume snapshot file count.
-            props.VolumeSnapshotFileCount = ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.VolumeSnapshotFileCount = ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.VolumeSnapshotFileCount, IntPtr.Zero);
 
             // Get the flags.
-            props.Flags = (EvidenceProperties)ImportedMethods.XWF_GetEvObjProp(
+            Properties.Flags = (EvidenceProperties)ImportedMethods.XWF_GetEvObjProp(
                 evidence, EvidencePropertyType.Flags, IntPtr.Zero);
 
             // Get the file system identifier.
-            props.FileSystemIdentifier
+            Properties.FileSystemIdentifier
                 = (VolumeFileSystem)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.FileSystemIdentifier, IntPtr.Zero);
 
             // Get the hash type.
-            props.HashType = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.HashType = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.HashType, IntPtr.Zero);
 
             // Get the hash value.
-            if (props.HashType == HashType.Undefined)
+            if (Properties.HashType == HashType.Undefined)
             {
-                props.HashValue = null;
+                Properties.HashValue = null;
             }
             else
             {
@@ -545,27 +557,27 @@ namespace XTensions
                     , EvidencePropertyType.HashValue, bufferPtr);
                 Byte[] hash1 = new Byte[hashSize];
                 Marshal.Copy(bufferPtr, hash1, 0, hashSize);
-                props.HashValue = hash1;
+                Properties.HashValue = hash1;
                 Marshal.FreeHGlobal(bufferPtr);
             }
 
             // Get the creation time.
-            props.CreationTime = DateTime.FromFileTime(ImportedMethods.XWF_GetEvObjProp(
+            Properties.CreationTime = DateTime.FromFileTime(ImportedMethods.XWF_GetEvObjProp(
                 evidence, EvidencePropertyType.CreationTime, IntPtr.Zero));
 
             // Get the modification time.
-            props.ModificationTime = DateTime.FromFileTime(
+            Properties.ModificationTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetEvObjProp(evidence
                     , EvidencePropertyType.ModificationTime, IntPtr.Zero));
 
             // Get the hash 2 type.
-            props.HashType2 = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
+            Properties.HashType2 = (HashType)ImportedMethods.XWF_GetEvObjProp(evidence
                 , EvidencePropertyType.HashType2, IntPtr.Zero);
 
             // Get the hash 2 value.
-            if (props.HashType2 == HashType.Undefined)
+            if (Properties.HashType2 == HashType.Undefined)
             {
-                props.HashValue2 = null;
+                Properties.HashValue2 = null;
             }
             else
             {
@@ -574,11 +586,11 @@ namespace XTensions
                     , EvidencePropertyType.HashValue2, bufferPtr);
                 Byte[] hash2 = new Byte[hashSize];
                 Marshal.Copy(bufferPtr, hash2, 0, hashSize);
-                props.HashValue2 = hash2;
+                Properties.HashValue2 = hash2;
                 Marshal.FreeHGlobal(bufferPtr);
             }
 
-            return props;
+            return Properties;
         }
 
         /// <summary>
@@ -589,13 +601,15 @@ namespace XTensions
         /// case. The unique ID, however, is guaranteed to never change and also 
         /// guaranteed to be unique within the case (actually likely unique even across 
         /// all the cases that the user will even deal with) and can be used to reliably 
-        /// recognize a known evidence object. Available from v18.7.
+        /// recognize a known evidence object. Available from v18.7. A helper method for 
+        /// XWF_GetEvObj().
         /// </summary>
         /// <param name="evidenceObjectId"></param>
         /// <returns>Returns a pointer to the evidence object corresponding to the 
         /// specified evidence object Id or NULL if not found.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        private static IntPtr XWF_GetEvObj(uint evidenceObjectId)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Should I change name to GetEvidenceObjectById?</remarks>
+        private static IntPtr GetEvidenceObject(uint evidenceObjectId)
         {
             return ImportedMethods.XWF_GetEvObj(evidenceObjectId);
         }
@@ -603,7 +617,8 @@ namespace XTensions
         /// <summary>
         /// Gets the name of a report table, null if none, or the maximum number of
         /// report table names if reportTableId is set to -1. Valid report table IDs 
-        /// range from 0 to (maximum number: -1).  Available in v17.7 and later.
+        /// range from 0 to (maximum number: -1).  Available in v17.7 and later. A helper
+        /// method for XWF_GetReportTableInfo().
         /// </summary>
         /// <param name="reportTableId">An existing report table ID or -1 to get the 
         /// maximum number of report tables.</param>
@@ -613,21 +628,21 @@ namespace XTensions
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Right now catching exceptions; need to figure out what's happening.
         /// - Todo: Need to test what happens when -1 if supplied.</remarks>
-        public static string XWF_GetReportTableInfo(int reportTableId
+        public static string GetReportTableInformation(int reportTableId
             , ReportTableInformationOptions informationOptions)
         {
             try
             {
-                IntPtr ReportNameBuffer = ImportedMethods.XWF_GetReportTableInfo(
+                IntPtr Buffer = ImportedMethods.XWF_GetReportTableInfo(
                     IntPtr.Zero, reportTableId, informationOptions);
-                string ReportName = Marshal.PtrToStringUni(ReportNameBuffer);
-                Marshal.FreeHGlobal(ReportNameBuffer);
+                string ReportName = Marshal.PtrToStringUni(Buffer);
+                Marshal.FreeHGlobal(Buffer);
 
                 return ReportName;
             }
             catch (System.AccessViolationException e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return null;
             }
         }
@@ -639,7 +654,8 @@ namespace XTensions
         /// is a much quicker way to find out which items are associated with a given
         /// report table than calling GetReportTableAssocs for all items in a volume
         /// snapshot, especially if the snapshot is huge. The list consists of 16-bit
-        /// report table ID and 32-bit item ID pairs repeatedly, stored back to back.
+        /// report table ID and 32-bit item ID pairs repeatedly, stored back to back. A
+        /// helper method for XWF_GetEvObjReportTableAssocs().
         /// </summary>
         /// <param name="evidence">A pointer to the evidence object.</param>
         /// <param name="options">Optional. Return list flags.</param>
@@ -648,23 +664,24 @@ namespace XTensions
         /// - Todo: Need to test the output and build an array of items returned.
         /// - Todo: Need to figure out what the flags are used for.
         /// </remarks>
-        public static IntPtr XWF_GetEvObjReportTableAssocs(IntPtr evidence
+        public static IntPtr GetEvidenceObjectReportTableAssociations(IntPtr evidence
             , uint options = 0x01)
         {
-            IntPtr lpValue;
+            IntPtr Value;
             IntPtr associationList = ImportedMethods.XWF_GetEvObjReportTableAssocs(
-                evidence, options, out lpValue);
+                evidence, options, out Value);
 
-            return lpValue;
+            return Value;
         }
 
         /// <summary>
         /// Defines to which volume's volume snapshot subsequent calls of the below
-        /// functions apply should you wish to change that.
+        /// functions apply should you wish to change that. A helper method for 
+        /// XWF_SelectVolumeSnapshot().
         /// </summary>
         /// <param name="volume">A pointer to the specified volume.</param>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static void XWF_SelectVolumeSnapshot(IntPtr volume)
+        public static void SelectVolumeSnapshot(IntPtr volume)
         {
             // Fail if an evidence pointer wasn't provided.
             if (volume == IntPtr.Zero) throw new ArgumentException(
@@ -675,7 +692,7 @@ namespace XTensions
 
         /// <summary>
         /// Retrieves information about the current volume snapshot. Available in v17.4
-        /// and later.
+        /// and later. A helper method for XWF_GetVSProp().
         /// </summary>
         /// <param name="propertyType">Property type.</param>
         /// <param name="specialItemType">Optional. Special item type. Only required
@@ -684,53 +701,53 @@ namespace XTensions
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Not sure we need this since we have another method below to get all 
         /// properties.</remarks>
-        public static long XWF_GetVSProp(VolumeSnapshotPropertyType propertyType
-            , SpecialItemType specialItemType = SpecialItemType.Ununsed)
+        public static long GetVolumeSnapshotProperties(
+            VolumeSnapshotPropertyType propertyType, SpecialItemType specialItemType = SpecialItemType.Ununsed)
         {
             return ImportedMethods.XWF_GetVSProp(propertyType, specialItemType);
         }
 
         /// <summary>
         /// Retrieves all available properties of the current volume snapshot.  Available
-        /// in v17.4 and above.
+        /// in v17.4 and above. A helper method for XWF_GetVSProps().
         /// </summary>
         /// <returns>Returns the properties in a VolumeSnapshotProperties structure.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static VolumeSnapshotProperties XWF_GetVSProps()
+        public static VolumeSnapshotProperties GetVolumeSnapshotProperties()
         {
             VolumeSnapshotProperties Properties = new VolumeSnapshotProperties();
 
             // Get the root directory.
-            Properties.rootDirectory = XWF_GetVSProp(
+            Properties.rootDirectory = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.RootDirectory);
             // Get the "Path Unknown" directory.
-            Properties.pathUnknownDirectory = XWF_GetVSProp(
+            Properties.pathUnknownDirectory = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.PathUnknownDirectory);
             // Get the "Carved Files" directory.
-            Properties.carvedFilesDirectory = XWF_GetVSProp(
+            Properties.carvedFilesDirectory = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.CarvedFilesDirectory);
             // Get the free space file.
-            Properties.freeSpaceFile = XWF_GetVSProp(
+            Properties.freeSpaceFile = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.FreeSpaceFile);
             // Get the "System Volume Information" directory.
-            Properties.systemVolumeInformationDirectory = XWF_GetVSProp(
+            Properties.systemVolumeInformationDirectory = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.SystemVolumeInformationDirectory);
             // Get the Windows EDB file.
-            Properties.windowsEDBFile = XWF_GetVSProp(
+            Properties.windowsEDBFile = ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.SpecialItemID
                 , SpecialItemType.WindowsEDBFile);
             // Get the first hash.
-            Properties.hashType1 = (HashType)XWF_GetVSProp(
+            Properties.hashType1 = (HashType)ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.HashType1
                 , SpecialItemType.Ununsed);
             // Get the second hash.
-            Properties.hashType2 = (HashType)XWF_GetVSProp(
+            Properties.hashType2 = (HashType)ImportedMethods.XWF_GetVSProp(
                 VolumeSnapshotPropertyType.HashType2
                 , SpecialItemType.Ununsed);
 
@@ -742,12 +759,12 @@ namespace XTensions
         /// directories). Item IDs are consecutive 0-based, meaning the ID of the first
         /// item in the volume snapshot is 0 and the last item is GetItemCount-1. You
         /// address each and every item in that range, be it a file or directory, by 
-        /// specifying its ID.
+        /// specifying its ID. A helper method for XWF_GetItemCount().
         /// </summary>
         /// <returns>Returns the number of file and directories in the curent volume
         /// snapshot.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static uint XWF_GetItemCount()
+        public static uint GetItemCount()
         {
             return ImportedMethods.XWF_GetItemCount(IntPtr.Zero);
         }
@@ -757,13 +774,13 @@ namespace XTensions
         /// specified ID and all its subdirectories. Also works for files that have
         /// child objects. Not currently supported for the root directory though you may
         /// specify -1 as the ID to get the total file count of the entire volume.
-        /// Available from v17.7.
+        /// Available from v17.7. A helper method for XWF_GetFileCount().
         /// </summary>
         /// <param name="directoryId">The directory ID.</param>
         /// <returns>Returns the accumulated number of all files under a provided
         /// directory or file and all it's subdirectories</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static uint XWF_GetFileCount(uint directoryId)
+        public static uint GetFileCount(uint directoryId)
         {
             return ImportedMethods.XWF_GetFileCount(directoryId);
         }
@@ -777,15 +794,17 @@ namespace XTensions
         /// parent's XWF_ITEM_INFO_FLAG_HASCHILDREN flag. For example, if you are
         /// creating a file carved from the sectors of the evidence object, you can
         /// specify the file size using XWF_SetItemSize and the start offset via the
-        /// nDefOfs parameter (must be negative) using XWF_SetItemOfs.
+        /// nDefOfs parameter (must be negative) using XWF_SetItemOfs. A helper method
+        /// for XWF_CreateItem().
         /// </summary>
         /// <param name="itemName">The name of the item.</param>
         /// <param name="options">Creation flags (XWFCreateItemFlags).</param>
         /// <returns>Returns the ID of the newly created item, or -1 if an error
         /// occurred (e.g. out of memory).</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static int XWF_CreateItem(
-            [MarshalAs(UnmanagedType.LPWStr)] string itemName, CreateItemOptions options)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Not sure we need the marshalled parameter.</remarks>
+        public static int CreateItem([MarshalAs(UnmanagedType.LPWStr)] string itemName
+            , CreateItemOptions options)
         {
             return ImportedMethods.XWF_CreateItem(itemName, options);
         }
@@ -797,7 +816,7 @@ namespace XTensions
         /// occurred (e.g. out of memory). Should be followed by a call to 
         /// XWF_SetItemSize (not necessary if attaching an external file) or 
         /// XWF_SetItemInformation (not necessary when carving a file in a file).
-        /// Available from v16.7.
+        /// Available from v16.7. A helper method for XWF_CreateFile().
         /// </summary>
         /// <param name="fileName">The name that this file will have in the volume 
         /// snapshot, which may be different from its source file name if you are
@@ -808,10 +827,10 @@ namespace XTensions
         /// data. The exact meaning depends on the flags.</param>
         /// <returns>Returns the Id of the newly created item or -1 if an error occurred.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static int XWF_CreateFile(
-            [MarshalAs(UnmanagedType.LPWStr)] string fileName, CreateFileOptions options
-            , uint parentItemId, IntPtr sourceInformation)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Not sure we need the marshalled parameter.</remarks>
+        public static int CreateFile([MarshalAs(UnmanagedType.LPWStr)] string fileName
+            , CreateFileOptions options, uint parentItemId, IntPtr sourceInformation)
         {
             return ImportedMethods.XWF_CreateFile(fileName, options, parentItemId
                 , sourceInformation);
@@ -821,51 +840,52 @@ namespace XTensions
         /// Retrieves a pointer to the null-terminated name of the specified item (file
         /// or directory) in UTF-16. You may call XWF_GetItemName and XWF_GetItemParent
         /// repeatedly until you reach the root directory and concatenate the results to
-        /// get the full path of an item.
+        /// get the full path of an item. A helper method for XWF_GetItemName().
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <returns>Returns name of the item.</returns>
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Implement path builder helper method.
         /// - Todo: Currently catching all exceptions; need to test further.</remarks>
-        public static string XWF_GetItemName(int itemId)
+        public static string GetItemName(int itemId)
         {
-            string result;
+            string Result;
 
             try
             {
                 IntPtr Buffer = ImportedMethods.XWF_GetItemName(itemId);
-                result = Marshal.PtrToStringUni(Buffer);
+                Result = Marshal.PtrToStringUni(Buffer);
                 Marshal.FreeHGlobal(Buffer);
             }
             catch (Exception e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return null;
             }
 
-            return result;
+            return Result;
         }
 
         /// <summary>
         /// Retrieves the size of the item (file or directory) in bytes, or -1 when the
-        /// size is unknown.
+        /// size is unknown. A helper method for XWF_GetItemSize().
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the size of the item, or -1 if unknown.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static long XWF_GetItemSize(long itemId)
+        public static long GetItemSize(long itemId)
         {
             return ImportedMethods.XWF_GetItemSize(itemId);
         }
 
         /// <summary>
-        /// Sets the size of the item in bytes, using -1 when the size is unknown.
+        /// Sets the size of the item in bytes, using -1 when the size is unknown. A
+        /// helper method for XWF_SetItemSize().
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <param name="size">The size of the item, or -1 if unknown.</param>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static void XWF_SetItemSize(int itemId, int size)
+        public static void SetItemSize(int itemId, int size)
         {
             ImportedMethods.XWF_SetItemSize(itemId, size);
         }
@@ -875,12 +895,13 @@ namespace XTensions
         /// record) where the item is defined. If negative, the absolute value is the 
         /// offset where a carved file starts on the volume. 0 if an error occurred. 
         /// 0xFFFFFFFF if not available/not applicable. Also retrieves the number of the 
-        /// sector from the point of the volume in which the data of the item starts.
+        /// sector from the point of the volume in which the data of the item starts. A
+        /// helper method for XWF_GetItemOfs().
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <returns>Returns XWFItemOffsets struct with the relative offsets.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static ItemOffsets XWF_GetItemOfs(int itemId)
+        public static ItemOffsets GetItemOffsets(int itemId)
         {
             long ItemOffset, StartSector;
             ItemOffsets ItemOffsets = new ItemOffsets();
@@ -904,14 +925,15 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Sets the offset and data sector start of a given item.
+        /// Sets the offset and data sector start of a given item. A helper method for
+        /// XWF_SetItemOfs().
         /// </summary>
         /// <param name="ItemId">The item ID.</param>
         /// <param name="itemOffsets">A ItemOffsets struct with the offsets to use.
         /// </param>
         /// <returns>Returns true if successful, otherwise false.</returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static bool XWF_SetItemOfs(int ItemId, ItemOffsets itemOffsets)
+        public static bool SetItemOffsets(int itemId, ItemOffsets itemOffsets)
         {
             long itemOffset;
 
@@ -928,7 +950,7 @@ namespace XTensions
                 return false;
             }
 
-            ImportedMethods.XWF_SetItemOfs(ItemId, itemOffset
+            ImportedMethods.XWF_SetItemOfs(itemId, itemOffset
                 , itemOffsets.DataStartSector);
 
             return true;
@@ -937,13 +959,13 @@ namespace XTensions
         /// <summary>
         /// Returns information about an item (file or directory) as stored in the 
         /// volume snapshot, such as the original ID or attributes that the item had in 
-        /// its defining file system.
+        /// its defining file system. A helper method for XWF_GetItemInformation().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
         /// <returns>Returns ItemInformation struct with the given item's information.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static ItemInformation XWF_GetItemInformation(int itemId)
+        public static ItemInformation GetItemInformation(int itemId)
         {
             ItemInformation Information = new ItemInformation();
             bool Status;
@@ -1023,13 +1045,14 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Sets information about an item (file or directory) in the volume snapshot.
+        /// Sets information about an item (file or directory) in the volume snapshot. A
+        /// helper method for XWF_SetItemInformation().
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="informationType"></param>
         /// <param name="informationValue"></param>
         /// <remarks>Todo: Everything!</remarks>
-        public static void XWF_SetItemInformation(int itemId
+        public static void SetItemInformation(int itemId
             , ItemInformationType informationType, long informationValue)
         {
         }
@@ -1039,13 +1062,13 @@ namespace XTensions
         /// returns information about the status of the type detection of the file: 
         /// 0 = not verified, 1 = too small, 2 = totally unknown, 3 = confirmed, 
         /// 4 = not confirmed, 5 = newly identified, 6 (v18.8 and later only) = mismatch
-        /// detected. ­1 means error.
+        /// detected. ­1 means error. A helper method for XWF_GetItemType().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
         /// <returns>Returns a ItemType structure with the file type and description.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static ItemType XWF_GetItemType(int itemId)
+        public static ItemType GetItemType(int itemId)
         {
             ItemType Results = new ItemType();
 
@@ -1064,6 +1087,7 @@ namespace XTensions
         /// <summary>
         /// Sets a description of the type of the specified file (or specify NULL if not 
         /// required) and information about the status of the type detection of the file.
+        /// A helper method for XWF_SetItemType().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
         /// <param name="typeDescription">A type description.</param>
@@ -1072,7 +1096,7 @@ namespace XTensions
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Catching all exceptions; need to investigate possibilities.
         /// - Todo: Convert to static method.</remarks>
-        public static bool XWF_SetItemType(int itemId, string typeDescription
+        public static bool SetItemType(int itemId, string typeDescription
             , ItemTypeCategory itemType)
         {
             try
@@ -1081,7 +1105,7 @@ namespace XTensions
             }
             catch (Exception e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return false;
             }
 
@@ -1090,19 +1114,21 @@ namespace XTensions
 
         /// <summary>
         /// Returns the ID of the parent of the specified item, or -1 if the item is the 
-        /// root directory or if for some strange reason no parent object is assigned.
+        /// root directory or if for some strange reason no parent object is assigned. A
+        /// helper method for XWF_GetItemParent().
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the parent ID of the given item, or -1 if there is none.
         /// </returns>
         /// <remarks>Version 1.0 coding complete.</remarks>
-        public static int XWF_GetItemParent(int itemId)
+        public static int GetItemParent(int itemId)
         {
             return ImportedMethods.XWF_GetItemParent(itemId);
         }
 
         /// <summary>
-        /// Sets the parent of a given child item.
+        /// Sets the parent of a given child item. A helper method for 
+        /// XWF_SetItemParent().
         /// </summary>
         /// <param name="childItemID">The child ID.</param>
         /// <param name="parentItemID">The parent ID.</param>
@@ -1110,7 +1136,7 @@ namespace XTensions
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Catching all exceptions; need to invetigate possibilities.
         /// - Todo: What happens when invalid child or parents is given?</remarks>
-        public static bool XWF_SetItemParent(int childItemID, int parentItemID)
+        public static bool SetItemParent(int childItemID, int parentItemID)
         {
             try
             {
@@ -1118,7 +1144,7 @@ namespace XTensions
             }
             catch (Exception e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return false;
             }
             return true;
@@ -1129,12 +1155,13 @@ namespace XTensions
         /// associated with. The names are delimited with a comma and space. If the 
         /// buffer was filled completely, that likely means the specified buffer length 
         /// was insufficient. In v17.6 SR-7 and later, returns the total number of
-        /// associations of that file, and lpBuffer may be NULL.
+        /// associations of that file, and lpBuffer may be NULL. A helper method for
+        /// XWF_GetReportTableAssocs().
         /// </summary>
         /// <param name="ItemID">The ID of the provided item.</param>
         /// associated with.</param>
         /// <returns>Returns the number of associations of the given item.</returns>
-        public static string[] XWF_GetReportTableAssocs(int itemID)
+        public static string[] GetReportTableAssociations(int itemID)
         {
             const int BufferLengthStep = 128;
             string Associations;
@@ -1172,18 +1199,25 @@ namespace XTensions
             }
         }
 
-        public static int XWF_AddToReportTable(int ItemID, string ReportTableName
-            , int Flags)
+        /// <summary>
+        /// A helper method for XWF_AddToReportTable().
+        /// </summary>
+        /// <param name="ItemID"></param>
+        /// <param name="ReportTableName"></param>
+        /// <param name="Flags"></param>
+        /// <returns></returns>
+        public static int AddToReportTable(int ItemID, string ReportTableName, int Flags)
         {
             return 0;
         }
 
         /// <summary>
-        /// Gets the comment (if any) of the given item.
+        /// Gets the comment (if any) of the given item. A helper method for 
+        /// XWF_GetComment().
         /// </summary>
         /// <param name="ItemID">The item ID.</param>
         /// <returns>Returns the comment.</returns>
-        public static string XWF_GetComment(int ItemID)
+        public static string GetComment(int ItemID)
         {
             string result;
 
@@ -1194,7 +1228,7 @@ namespace XTensions
             }
             catch (Exception e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return null;
             }
 
@@ -1202,14 +1236,14 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Sets the comment of the given item.
+        /// Sets the comment of the given item. A helper method for XWF_AddComment().
         /// </summary>
         /// <param name="ItemID">The item ID.</param>
         /// <param name="Comment">The comment.</param>
         /// <param name="FlagsHowToAdd">Flags indicating how the comment should be 
         /// added.</param>
         /// <returns>Returns true if successfull, otherwise false.</returns>
-        public static bool XWF_AddComment(int ItemID, string Comment
+        public static bool AddComment(int ItemID, string Comment
             , AddCommentMode FlagsHowToAdd)
         {
             return ImportedMethods.XWF_AddComment(ItemID, Comment, FlagsHowToAdd);
@@ -1217,11 +1251,12 @@ namespace XTensions
 
         /// <summary>
         /// Get the previously extracted metadata of a given item.  Good to use this 
-        /// one if metadata has already been extracted from items.
+        /// one if metadata has already been extracted from items. A helper method for
+        /// XWF_GetExtractedMetadata().
         /// </summary>
         /// <param name="ItemID">The item ID.</param>
         /// <returns>Returns the previously extracted metadata.</returns>
-        public static string XWF_GetExtractedMetadata(int ItemID)
+        public static string GetExtractedMetadata(int ItemID)
         {
             string result;
 
@@ -1232,25 +1267,42 @@ namespace XTensions
             }
             catch (Exception e)
             {
-                XWF_OutputMessage("Exception: " + e);
+                OutputMessage("Exception: " + e);
                 return null;
             }
 
             return result;
         }
 
-        public static bool XWF_AddExtractedMetadata(int nItemID, string sText
+        /// <summary>
+        /// A helper method for XWF_AddExtractedMetadata().
+        /// </summary>
+        /// <param name="nItemID"></param>
+        /// <param name="sText"></param>
+        /// <param name="nFlagsHowToAdd"></param>
+        /// <returns></returns>
+        public static bool AddExtractedMetadata(int nItemID, string sText
             , AddCommentMode nFlagsHowToAdd)
         {
             return ImportedMethods.XWF_AddExtractedMetadata(nItemID, sText
                 , nFlagsHowToAdd);
         }
 
-        public static string XWF_GetHashValue(int nItemID)
+        /// <summary>
+        /// A helper method for XWF_GetHashValue().
+        /// </summary>
+        /// <param name="nItemID"></param>
+        /// <returns></returns>
+        public static string GetHashValue(int nItemID)
         {
             return "";
         }
 
+        /// <summary>
+        /// A helper method for XWF_GetMetadata().
+        /// </summary>
+        /// <param name="nItemID"></param>
+        /// <returns></returns>
         public static string XWF_GetMetadata(int nItemID)
         {
             return "";
@@ -1266,26 +1318,32 @@ namespace XTensions
             return ImportedMethods.XWF_SearchWithPtrToPages(ref SInfo, IntPtr.Zero);
         }
 
-        public static void XWF_OutputMessage(
+        /// <summary>
+        /// A helper method for XWF_OutputMessage().
+        /// </summary>
+        /// <param name="lpMessage"></param>
+        /// <param name="level"></param>
+        /// <param name="nFlags"></param>
+        public static void OutputMessage(
             [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
             , OutputMessageLevel level = OutputMessageLevel.Level1
             , OutputMessageOptions nFlags = OutputMessageOptions.None)
         {
             string tab = new string(' ', (int)level * 4);
-            ImportedMethods.XWF_OutputMessage(tab + lpMessage, nFlags);
+            ImportedMethods.OutputMessage(tab + lpMessage, nFlags);
         }
 
-        public static void XWF_OutputEmptyLine()
+        public static void OutputEmptyLine()
         {
-            XWF_OutputMessage("");
+            OutputMessage("");
         }
 
-        public static void XWF_OutputHeader(
+        public static void OutputHeader(
             [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
             , OutputMessageLevel level = OutputMessageLevel.Level1)
         {
-            XWF_OutputMessage(lpMessage, level);
-            XWF_OutputMessage("");
+            OutputMessage(lpMessage, level);
+            OutputMessage("");
         }
 
         public static string Hexlify(byte[] ba)
@@ -1303,12 +1361,12 @@ namespace XTensions
         {
             ArrayList evidence = new ArrayList();
 
-            IntPtr hCurrent = XWF_GetFirstEvObj();
+            IntPtr hCurrent = GetFirstEvidenceObject();
 
             while (hCurrent != IntPtr.Zero)
             {
                 evidence.Add(hCurrent);
-                hCurrent = XWF_GetNextEvObj(hCurrent);
+                hCurrent = GetNextEvidenceObject(hCurrent);
             }
 
             return evidence;
@@ -1330,14 +1388,14 @@ namespace XTensions
             try
             {
                 // Get the size of the provided item.
-                long size = XWF_GetSize(hItem, ItemSizeType.PhysicalSize);
+                long size = GetSize(hItem, ItemSizeType.PhysicalSize);
 
                 // Initialize and create a pointer to the buffer.
                 int bufferSize = (int)size;
                 IntPtr bufferPtr = Marshal.AllocHGlobal(bufferSize);
 
                 // Call XWF_Read to read the item into the buffer.
-                return XWF_Read(hItem, 0, bufferSize);
+                return Read(hItem, 0, bufferSize);
             }
             catch { }
 
@@ -1385,7 +1443,7 @@ namespace XTensions
             StringBuilder sb = new StringBuilder();
             while (true)
             {
-                int parentItemId = HelperMethods.XWF_GetItemParent(itemId);
+                int parentItemId = HelperMethods.GetItemParent(itemId);
 
                 /*
                 XWFGetItemName returns text "(Root directory)" for the root directory.
@@ -1396,7 +1454,7 @@ namespace XTensions
                 if (parentItemId < 0) return sb.ToString();
 
                 sb.Insert(0, Path.DirectorySeparatorChar
-                    + XWF_GetItemName(itemId));
+                    + GetItemName(itemId));
 
                 itemId = parentItemId;
             }
@@ -1412,12 +1470,12 @@ namespace XTensions
         /// <returns></returns>
         public static int CreateFileFromExternalFile(string name
             , string externalFilename
-            , int parentItemId
+            , uint parentItemId
             , bool keepExternalFile = false)
         {
             IntPtr extFilenamePtr = Marshal.StringToHGlobalUni(externalFilename);
 
-            int itemId = XWF_CreateFile(name
+            int itemId = CreateFile(name
                 , CreateFileOptions.AttachExternalFile
                     | (keepExternalFile ? CreateFileOptions.KeepExternalFile : 0)
                 , parentItemId

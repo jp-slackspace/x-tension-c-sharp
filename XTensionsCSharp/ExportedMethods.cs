@@ -64,7 +64,7 @@ namespace XTensions
 
             if (DEBUGGING)
             {
-                HelperMethods.XWF_OutputMessage(String.Format(
+                HelperMethods.OutputMessage(String.Format(
                     "Version: {0}, Service Release: {1}, Language: {2}, nFlags: {3}, "
                   + "Main Window Pointer: {4}"
                   , nVersion.Version, nVersion.ServiceRelease, nVersion.Language, nFlags
@@ -103,7 +103,7 @@ namespace XTensions
         [DllExport]
         public static int XT_About(IntPtr hParentWnd, IntPtr lpReserved)
         {
-            HelperMethods.XWF_OutputMessage(
+            HelperMethods.OutputMessage(
                 "X-Tension Template: Describe your extension here.");
 
             return 0;
@@ -212,20 +212,20 @@ namespace XTensions
         [DllExport]
         public static long XT_ProcessItem(int nItemID, IntPtr lpReserved)
         {
-            HelperMethods.XWF_OutputMessage("Processing " + nItemID);
+            HelperMethods.OutputMessage("Processing " + nItemID);
             // Store the item name, full path, type, and size for later use.
-            string itemName = HelperMethods.XWF_GetItemName(nItemID);
+            string itemName = HelperMethods.GetItemName(nItemID);
             string itemPath = HelperMethods.GetFullPath(nItemID);
-            ItemType itemType = HelperMethods.XWF_GetItemType(nItemID);
-            long itemSize = HelperMethods.XWF_GetItemSize(nItemID);
+            ItemType itemType = HelperMethods.GetItemType(nItemID);
+            long itemSize = HelperMethods.GetItemSize(nItemID);
 
-            HelperMethods.XWF_OutputMessage("Item Name: " + itemName);
-            //HelperMethods.XWF_OutputMessage("Item Path: " + itemPath);
-            HelperMethods.XWF_OutputMessage("Item Type: " + itemType.Type);
-            HelperMethods.XWF_OutputMessage("Item Size: " + itemSize);
+            HelperMethods.OutputMessage("Item Name: " + itemName);
+            //HelperMethods.OutputMessage("Item Path: " + itemPath);
+            HelperMethods.OutputMessage("Item Type: " + itemType.Type);
+            HelperMethods.OutputMessage("Item Size: " + itemSize);
 
             // Get a pointer to the current item's data.
-            IntPtr hItem = HelperMethods.XWF_OpenItem(_currentVolumeHandle, nItemID
+            IntPtr hItem = HelperMethods.OpenItem(_currentVolumeHandle, nItemID
                 , ItemOpenModes.LogicalContents);
 
             // Read the current item's data into a byte array.
@@ -234,7 +234,7 @@ namespace XTensions
             if (contents == null)
             {
                 // Do something because we failed to read the data.
-                HelperMethods.XWF_OutputMessage("Failed to read item contents");
+                HelperMethods.OutputMessage("Failed to read item contents");
 
                 // 
                 // Put logic here for handling failure to read file.
@@ -243,7 +243,7 @@ namespace XTensions
             else
             {
                 // Do stuff with the data.
-                HelperMethods.XWF_OutputMessage("Item contents read successfully.");
+                HelperMethods.OutputMessage("Item contents read successfully.");
 
                 // 
                 // Put logic here for handling read file data.
@@ -303,7 +303,7 @@ namespace XTensions
         {
             if (DEBUGGING)
             {
-                HelperMethods.XWF_OutputMessage(string.Format(
+                HelperMethods.OutputMessage(string.Format(
                     "Search Terms: {0}, Search Flags: {1}"
                   , PSInfo.lpSearchTerms, PSInfo.nFlags));
                 
@@ -313,7 +313,7 @@ namespace XTensions
                     var codePages = (CodePages)Marshal.PtrToStructure(CPages
                                         , typeof(CodePages));
 
-                    HelperMethods.XWF_OutputMessage(string.Format(
+                    HelperMethods.OutputMessage(string.Format(
                         ", Code Pages: {0}, {1}, {2}, {3}, {4}"
                         , codePages.CodePage1, codePages.CodePage2
                         , codePages.CodePage3, codePages.CodePage4
@@ -349,7 +349,7 @@ namespace XTensions
         {
             if (DEBUGGING)
             {
-                HelperMethods.XWF_OutputMessage(string.Format(
+                HelperMethods.OutputMessage(string.Format(
                     "Search Item ID: {0}, Flags: {1}"
                   , info.nItemID, info.nFlags));
             }

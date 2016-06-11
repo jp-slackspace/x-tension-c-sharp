@@ -6,19 +6,19 @@ namespace XTensions.Testing
     {
         private static void ProcessSector(IntPtr hVolume, Int64 nSectorNumber)
         {
-            SectorInformation sectorInfo = HelperMethods.XWF_GetSectorContents(hVolume
+            SectorInformation sectorInfo = HelperMethods.GetSectorContents(hVolume
                 , nSectorNumber);
 
-            HelperMethods.XWF_OutputMessage("Sector Number: " + nSectorNumber
+            HelperMethods.OutputMessage("Sector Number: " + nSectorNumber
                 , OutputMessageLevel.Level3);
-            HelperMethods.XWF_OutputMessage("Is Sector Allocated: "
+            HelperMethods.OutputMessage("Is Sector Allocated: "
                 + sectorInfo.IsAllocated, OutputMessageLevel.Level4);
-            HelperMethods.XWF_OutputMessage("Sector Description: "
+            HelperMethods.OutputMessage("Sector Description: "
                 + sectorInfo.Description, OutputMessageLevel.Level4);
-            HelperMethods.XWF_OutputMessage("Sector Owner Item ID: "
+            HelperMethods.OutputMessage("Sector Owner Item ID: "
                 + sectorInfo.OwnerItemID, OutputMessageLevel.Level4);
 
-            HelperMethods.XWF_OutputEmptyLine();
+            HelperMethods.OutputEmptyLine();
         }
 
         /// <summary>
@@ -30,32 +30,32 @@ namespace XTensions.Testing
         public static void RunTest(IntPtr hVolume
             , XTensionActionSource nOpType = XTensionActionSource.MainMenu)
         {
-            HelperMethods.XWF_OutputHeader("SECTOR INTERACTION TESTING MODULE"
+            HelperMethods.OutputHeader("SECTOR INTERACTION TESTING MODULE"
                 , OutputMessageLevel.Level1);
 
-            // XWF_GetSize() test.
-            HelperMethods.XWF_OutputHeader("XWF_GetSize() Test"
+            // GetSize() test.
+            HelperMethods.OutputHeader("GetSize() Test"
                 , OutputMessageLevel.Level2);
 
-            var itemPhysicalSize = HelperMethods.XWF_GetSize(hVolume
+            var itemPhysicalSize = HelperMethods.GetSize(hVolume
                 , ItemSizeType.PhysicalSize);
-            HelperMethods.XWF_OutputMessage("Volume Physical Size: " + itemPhysicalSize
+            HelperMethods.OutputMessage("Volume Physical Size: " + itemPhysicalSize
                 , OutputMessageLevel.Level3);
 
             Int32 minSize = 1000000000;
             if (itemPhysicalSize < minSize)
             {
-                HelperMethods.XWF_OutputMessage("Provided item must be at least " 
+                HelperMethods.OutputMessage("Provided item must be at least " 
                     + minSize + " bytes.", OutputMessageLevel.Level3);
 
-                HelperMethods.XWF_OutputEmptyLine();
+                HelperMethods.OutputEmptyLine();
                 return;
             }
 
-            HelperMethods.XWF_OutputEmptyLine();
+            HelperMethods.OutputEmptyLine();
 
             // XWF_GetSectorContents() test.
-            HelperMethods.XWF_OutputHeader("XWF_GetSectorContents() Test"
+            HelperMethods.OutputHeader("XWF_GetSectorContents() Test"
                 , OutputMessageLevel.Level2);
 
             ProcessSector(hVolume, 100);
