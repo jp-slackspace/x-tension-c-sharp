@@ -33,6 +33,20 @@ namespace XTensions
     }
 
     /// <summary>
+    /// Indicates the result of associating a file with a report table.
+    /// </summary>
+    public enum AddToReportTableResult : uint
+    {
+        /// <summary>There was an error in the assocation.</summary>
+        Failure = 0,
+        /// <summary>File was successfully and newly associated with the report table.
+        /// </summary>
+        NewAssociation = 1,
+        /// <summary>The file to report table association already exists</summary>
+        ExistingAssociation = 2
+    }
+
+    /// <summary>
     /// Capabilities of the calling program.
     /// </summary>
     [Flags]

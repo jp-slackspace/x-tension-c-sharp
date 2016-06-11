@@ -1158,10 +1158,11 @@ namespace XTensions
         /// associations of that file, and lpBuffer may be NULL. A helper method for
         /// XWF_GetReportTableAssocs().
         /// </summary>
-        /// <param name="ItemID">The ID of the provided item.</param>
+        /// <param name="itemId">The ID of the provided item.</param>
         /// associated with.</param>
         /// <returns>Returns the number of associations of the given item.</returns>
-        public static string[] GetReportTableAssociations(int itemID)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static string[] GetReportTableAssociations(int itemId)
         {
             const int BufferLengthStep = 128;
             string Associations;
@@ -1174,7 +1175,7 @@ namespace XTensions
 
                 // Get the results from the API function, including the associations up
                 // the specified buffer length.
-                int AssociationsCount = ImportedMethods.XWF_GetReportTableAssocs(itemID
+                int AssociationsCount = ImportedMethods.XWF_GetReportTableAssocs(itemId
                     , Buffer, bufferLength);
 
                 // If no associations, empty the associations string and return.
@@ -1200,31 +1201,42 @@ namespace XTensions
         }
 
         /// <summary>
+        /// Associates the specified file with the specified report table. If the report 
+        /// table does not exist yet in the currently active case, it will be created. 
         /// A helper method for XWF_AddToReportTable().
         /// </summary>
-        /// <param name="ItemID"></param>
-        /// <param name="ReportTableName"></param>
-        /// <param name="Flags"></param>
-        /// <returns></returns>
-        public static int AddToReportTable(int ItemID, string ReportTableName, int Flags)
+        /// <param name="itemId">The Id of the item to association with the report table.
+        /// </param>
+        /// <param name="reportTableName">The report table name.</param>
+        /// <param name="options">Options to use for the association.</param>
+        /// <returns>Returns the result of the assocation.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs testing.</remarks>
+        public static AddToReportTableResult AddToReportTable(int itemId
+            , string reportTableName, AddToReportTableOptions options)
         {
-            return 0;
+            return ImportedMethods.XWF_AddToReportTable(itemId, reportTableName,
+                options);
         }
 
         /// <summary>
         /// Gets the comment (if any) of the given item. A helper method for 
         /// XWF_GetComment().
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
+        /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the comment.</returns>
-        public static string GetComment(int ItemID)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Currently catching all exceptions; need to figure out what the
+        /// possible exceptions are.</remarks>
+        public static string GetComment(int itemId)
         {
-            string result;
+            string Comment;
 
             try
             {
-                IntPtr temp = ImportedMethods.XWF_GetComment(ItemID);
-                result = Marshal.PtrToStringUni(temp);
+                IntPtr Buffer = ImportedMethods.XWF_GetComment(itemId);
+                Comment = Marshal.PtrToStringUni(Buffer);
+                Marshal.FreeHGlobal(Buffer);
             }
             catch (Exception e)
             {
@@ -1232,38 +1244,41 @@ namespace XTensions
                 return null;
             }
 
-            return result;
+            return Comment;
         }
 
         /// <summary>
         /// Sets the comment of the given item. A helper method for XWF_AddComment().
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
-        /// <param name="Comment">The comment.</param>
-        /// <param name="FlagsHowToAdd">Flags indicating how the comment should be 
-        /// added.</param>
+        /// <param name="itemId">The item Id.</param>
+        /// <param name="comment">The comment.</param>
+        /// <param name="mode">Indicates how the comment should be added.</param>
         /// <returns>Returns true if successfull, otherwise false.</returns>
-        public static bool AddComment(int ItemID, string Comment
-            , AddCommentMode FlagsHowToAdd)
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static bool AddComment(int itemId, string comment, AddCommentMode mode)
         {
-            return ImportedMethods.XWF_AddComment(ItemID, Comment, FlagsHowToAdd);
+            return ImportedMethods.XWF_AddComment(itemId, comment, mode);
         }
 
         /// <summary>
-        /// Get the previously extracted metadata of a given item.  Good to use this 
-        /// one if metadata has already been extracted from items. A helper method for
-        /// XWF_GetExtractedMetadata().
+        /// Get the previously extracted metadata of a given item.  Good to use this one 
+        /// if metadata has already been extracted from items. Available in v17.7 and 
+        /// later. A helper method for XWF_GetExtractedMetadata().
         /// </summary>
-        /// <param name="ItemID">The item ID.</param>
+        /// <param name="itemId">The item Id.</param>
         /// <returns>Returns the previously extracted metadata.</returns>
-        public static string GetExtractedMetadata(int ItemID)
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs testing.
+        /// - Todo: Catching all exceptions, need to determine exception possiblities.
+        /// </remarks>
+        public static string GetExtractedMetadata(int itemId)
         {
-            string result;
+            string Metadata;
 
             try
             {
-                IntPtr temp = ImportedMethods.XWF_GetExtractedMetadata(ItemID);
-                result = Marshal.PtrToStringUni(temp);
+                IntPtr Buffer = ImportedMethods.XWF_GetExtractedMetadata(itemId);
+                Metadata = Marshal.PtrToStringUni(Buffer);
             }
             catch (Exception e)
             {
@@ -1271,31 +1286,43 @@ namespace XTensions
                 return null;
             }
 
-            return result;
+            return Metadata;
         }
 
         /// <summary>
-        /// A helper method for XWF_AddExtractedMetadata().
+        /// Adds the specified text to the extracted metadata of the specified item. 
+        /// Available in v17.7 and later. A helper method for XWF_AddExtractedMetadata().
         /// </summary>
-        /// <param name="nItemID"></param>
-        /// <param name="sText"></param>
-        /// <param name="nFlagsHowToAdd"></param>
-        /// <returns></returns>
-        public static bool AddExtractedMetadata(int nItemID, string sText
-            , AddCommentMode nFlagsHowToAdd)
+        /// <param name="itemId">The item Id.</param>
+        /// <param name="text">The text to add to the extracted metadata.</param>
+        /// <param name="mode">Indicates how the metadata should be added.</param>
+        /// <returns>Returns true if successfull, otherwise false.</returns>
+        /// <remarks>Verion 1.0 coding complete.
+        /// - Todo: Test the method.</remarks>
+        public static bool AddExtractedMetadata(int itemId, string text
+            , AddCommentMode mode)
         {
-            return ImportedMethods.XWF_AddExtractedMetadata(nItemID, sText
-                , nFlagsHowToAdd);
+            return ImportedMethods.XWF_AddExtractedMetadata(itemId, text, mode);
         }
 
         /// <summary>
-        /// A helper method for XWF_GetHashValue().
+        /// Retrieves the hash value of a a file if one has been computed, which can be 
+        /// checked using GetItemInformation(). Available in v16.8 and later. A helper 
+        /// method for XWF_GetHashValue().
         /// </summary>
-        /// <param name="nItemID"></param>
+        /// <param name="itemId"></param>
         /// <returns></returns>
-        public static string GetHashValue(int nItemID)
+        /// <remarks>
+        /// - Todo: Needs testing and a lot of work.
+        /// - Todo: Check version
+        /// - Todo: Define variable for the buffer lenght.</remarks>
+        public static string GetHashValue(int itemId)
         {
-            return "";
+            string Hash;
+            IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
+            ImportedMethods.XWF_GetHashValue(itemId, Buffer);
+            Hash = Marshal.PtrToStringUni(Buffer);
+            return Hash;
         }
 
         /// <summary>

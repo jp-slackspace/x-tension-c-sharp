@@ -195,7 +195,7 @@ namespace XTensions
             , IntPtr buffer, int bufferLength);
         public static XWFGetReportTableAssocsDelegate XWF_GetReportTableAssocs;
 
-        public delegate int XWFAddToReportTableDelegate(int nItemID
+        public delegate AddToReportTableResult XWFAddToReportTableDelegate(int nItemID
             , [MarshalAs(UnmanagedType.LPWStr)] string lpReportTableName
             , AddToReportTableOptions nFlags);
         public static XWFAddToReportTableDelegate XWF_AddToReportTable;
