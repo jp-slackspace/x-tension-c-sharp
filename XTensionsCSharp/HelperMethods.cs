@@ -1279,6 +1279,7 @@ namespace XTensions
             {
                 IntPtr Buffer = ImportedMethods.XWF_GetExtractedMetadata(itemId);
                 Metadata = Marshal.PtrToStringUni(Buffer);
+                Marshal.FreeHGlobal(Buffer);
             }
             catch (Exception e)
             {
@@ -1322,17 +1323,87 @@ namespace XTensions
             IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
             ImportedMethods.XWF_GetHashValue(itemId, Buffer);
             Hash = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
             return Hash;
         }
 
         /// <summary>
-        /// A helper method for XWF_GetMetadata().
+        /// Extracts internal metadata of a file to memory and returns a pointer to it if 
+        /// successful, or NULL otherwise. The pointer is guaranteed to be valid only at 
+        /// the time when you retrieve it. If you wish to do something with the text that 
+        /// it points to after your X-Tension returns control to X-Ways Forensics, you 
+        /// need to copy it to your own buffer. Unlike GetExtractedMetadata, the file 
+        /// must have been opened with XWF_OpenItem because this function reads from the 
+        /// file contents, not from data stored in the volume snapshot. The metadata is 
+        /// taken from the very file that contains it, for example in the case of zip-
+        /// style Office documents from the XML files. Available in v17.7 and later. A 
+        /// helper method for XWF_GetMetadata().
         /// </summary>
-        /// <param name="nItemID"></param>
-        /// <returns></returns>
-        public static string XWF_GetMetadata(int nItemID)
+        /// <param name="itemId">The item Id.</param>
+        /// <returns>Returns the metadata if successful, or NULL otherwise.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs some serious work and testing.
+        /// - Question: What buffer length should be used?</remarks>
+        public static string GetMetadata(int itemId)
         {
-            return "";
+            string Metadata;
+            IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
+            ImportedMethods.XWF_GetMetadata(itemId, Buffer);
+            Metadata = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
+            return Metadata;
+        }
+
+        /// <summary>
+        /// Provides a standardized true-color RGB raster image representation for any 
+        /// picture file type that is supported internally in X-Ways Forensics (e.g. 
+        /// JPEG, GIF, PNG, ...), with 24 bits per pixel. The result is a pointer to a 
+        /// memory buffer, or NULL if not successful (e.g. if not a supported file type 
+        /// variant or the file is too corrupt). The caller is responsible for releasing 
+        /// the allocated memory buffer when no longer needed, by calling the Windows API 
+        /// function VirtualFree, with parameters dwSize = 0 and dwFreeType = 
+        /// MEM_RELEASE. Available in v18.0 and later. A helper method for 
+        /// XWF_GetRasterImage().
+        /// </summary>
+        /// <param name="ImageInformation">A structure of image information.</param>
+        /// <returns>Returns a pointer to the raster image.</returns>
+        /// <remarks>Todo: Everything.</remarks>
+        public static IntPtr GetRasterImage(RasterImageInformation imageInformation)
+        {
+            return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Runs a simultaneous search for multiple search terms in the specified volume. 
+        /// The volume must be associated with an evidence object. Note that if this 
+        /// function is called as part of volume snapshot refinement, it can be called 
+        /// automatically for all selected evidence objects if the user applies the 
+        /// X-Tension to all selected evidence objects. Must only be called from 
+        /// XT_Prepare or XT_Finalize. Available in v16.5 and later. A wrapper method for 
+        /// XWF_Search().
+        /// </summary>
+        /// <param name="information">Information about the search.</param>
+        /// <param name="codePages">The code pages to use.</param>
+        /// <returns></returns>
+        public static int Search(ref SearchInformation information, CodePages codePages)
+        {
+            return 0;
+        }
+
+        /// <summary>
+        /// Creates a new search term and returns its ID or (if flag 0x01 is specified) 
+        /// alternatively returns the ID of an existing search term with the same name, 
+        /// if any. Returns -1 in case of an error. The maximum number of search terms in 
+        /// a case is currently 8,191 (in v18.5). Use this function if you wish to 
+        /// automatically categorize search hits (assign them to different search terms) 
+        /// while responding to calls of ProcessSearchHit() or using SetSearchHit(). 
+        /// Available in v18.5 and later. A helper method for XWF_AddSearchTerm().
+        /// </summary>
+        /// <param name="SearchTermName"></param>
+        /// <returns></returns>
+        public static int AddSearchTerm(string SearchTermName)
+        {
+            return 0;
         }
 
         /// <summary>

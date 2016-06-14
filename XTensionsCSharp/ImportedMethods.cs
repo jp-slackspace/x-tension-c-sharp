@@ -231,7 +231,7 @@ namespace XTensions
         */
 
         [return: MarshalAs(UnmanagedType.LPWStr)]
-        public delegate string XWFGetMetadataDelegate(IntPtr nItemID, IntPtr hItem);
+        public delegate string XWFGetMetadataDelegate(int nItemID, IntPtr hItem);
         public static XWFGetMetadataDelegate XWF_GetMetadata;
 
         public delegate IntPtr XWFGetRasterImageDelegate(RasterImageInformation RIInfo);

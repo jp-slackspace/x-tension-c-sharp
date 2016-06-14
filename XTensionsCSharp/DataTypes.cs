@@ -967,19 +967,20 @@ namespace XTensions
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public struct RasterImageInformation
     {
-        /// <summary>Size of the packed record.</summary>
-        public int iSize;
-        /// <summary>Unknown.</summary>
-        public IntPtr nItemID;
-        /// <summary>Unknown.</summary>
-        public IntPtr hItem;
-        public uint nFlags; // need enum for this
+        /// <summary>Size of the structure.</summary>
+        public int Size;
+        /// <summary>The item Id.</summary>
+        public IntPtr ItemId;
+        /// <summary>Pointer to the item.</summary>
+        public IntPtr Item;
+        /// <summary></summary>
+        public uint Options; // need enum for this
         /// <summary>Width of the image.</summary>
-        public uint nWidth;
+        public uint Width;
         /// <summary>Height of the image.</summary>
-        public uint nHeight;
+        public uint Height;
         /// <summary>Unknown.</summary>
-        public uint nResSize;
+        public uint ImageSize;
     };
 
     /// <summary>
