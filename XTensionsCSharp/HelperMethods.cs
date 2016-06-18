@@ -265,6 +265,30 @@ namespace XTensions
         }
 
         /// <summary>
+        /// Reads an entire item.
+        /// </summary>
+        /// <param name="item">The specified item.</param>
+        /// <returns>Returns a byte array of the item's contents.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Why are we catching exceptions?
+        /// - Todo: Testing.</remarks>
+        /// - Todo: Test the provided item.
+        public static byte[] ReadItem(IntPtr item)
+        {
+            try
+            {
+                // Get the size of the provided item.
+                int Size = (int)GetSize(item, ItemSizeType.PhysicalSize);
+
+                // Call XWF_Read to read the item into the buffer.
+                return Read(item, 0, Size);
+            }
+            catch { }
+
+            return null;
+        }
+
+        /// <summary>
         /// Retrieves information about the current case. A helper method for 
         /// XWF_GetCaseProps().
         /// </summary>
@@ -340,18 +364,28 @@ namespace XTensions
             return ImportedMethods.XWF_GetNextEvObj(previousEvidence, IntPtr.Zero);
         }
 
-        /*
         /// <summary>
-        /// NOT CURRENTLY IMPLEMENTED. Removes the specified evidence object from the 
-        /// case. 
+        /// Get an array of all evidence object pointers for the current case.
         /// </summary>
-        /// <param name="EvidenceObject">Evidence object to be deleted.</param>
-        /// <returns></returns>
-        public static IntPtr XWF_DeleteEvObj(IntPtr EvidenceObject)
+        /// <returns>Returns an array of all evidence object pointers for the current 
+        /// case.</returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static ArrayList GetCaseEvidence()
         {
-            return IntPtr.Zero;
+            ArrayList evidence = new ArrayList();
+
+            // Get the first evidence object.
+            IntPtr current = GetFirstEvidenceObject();
+
+            // Iterate the remaining evidence objects, adding them each to the array.
+            while (current != IntPtr.Zero)
+            {
+                evidence.Add(current);
+                current = GetNextEvidenceObject(current);
+            }
+
+            return evidence;
         }
-        */
 
         /// <summary>
         /// Creates one or more evidence objects from one source (which can be a medium,
@@ -562,8 +596,9 @@ namespace XTensions
             }
 
             // Get the creation time.
-            Properties.CreationTime = DateTime.FromFileTime(ImportedMethods.XWF_GetEvObjProp(
-                evidence, EvidencePropertyType.CreationTime, IntPtr.Zero));
+            Properties.CreationTime = DateTime.FromFileTime(
+                ImportedMethods.XWF_GetEvObjProp(evidence
+                , EvidencePropertyType.CreationTime, IntPtr.Zero));
 
             // Get the modification time.
             Properties.ModificationTime = DateTime.FromFileTime(
@@ -701,8 +736,8 @@ namespace XTensions
         /// <remarks>Version 1.0 coding complete.
         /// - Todo: Not sure we need this since we have another method below to get all 
         /// properties.</remarks>
-        public static long GetVolumeSnapshotProperties(
-            VolumeSnapshotPropertyType propertyType, SpecialItemType specialItemType = SpecialItemType.Ununsed)
+        public static long GetVolumeSnapshotProperties(VolumeSnapshotPropertyType 
+            propertyType, SpecialItemType specialItemType = SpecialItemType.Ununsed)
         {
             return ImportedMethods.XWF_GetVSProp(propertyType, specialItemType);
         }
@@ -1688,68 +1723,26 @@ namespace XTensions
         }
 
         /// <summary>
-        /// 
+        /// Converts a byte array to a hex string representation. For example, 
+        /// \x00\x01\x02\x03 would become "00010203".
         /// </summary>
-        /// <param name="ba"></param>
-        /// <returns></returns>
-        public static string Hexlify(byte[] ba)
+        /// <param name="data">The byte array to convert.</param>
+        /// <returns>Returns a hex string representation of the provided byte array.
+        /// </returns>
+        /// <remarks>Version 1.0 coding complete.</remarks>
+        public static string Hexlify(byte[] data)
         {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
+            // String should be double length of the byte array since each byte will be
+            // represented by two characters.
+            StringBuilder hex = new StringBuilder(data.Length * 2);
+
+            // Append each hex byte representation to the string.
+            foreach (byte b in data)
             {
                 hex.AppendFormat("{0:x2}", b);
             }
 
             return hex.ToString();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static ArrayList GetCaseEvidence()
-        {
-            ArrayList evidence = new ArrayList();
-
-            IntPtr hCurrent = GetFirstEvidenceObject();
-
-            while (hCurrent != IntPtr.Zero)
-            {
-                evidence.Add(hCurrent);
-                hCurrent = GetNextEvidenceObject(hCurrent);
-            }
-
-            return evidence;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hItem"></param>
-        /// <returns></returns>
-        public static byte[] ReadItem(IntPtr hItem)
-        {
-            //If successful - returns contents of the item as a byte array,
-            //if failed - returns null.
-
-            //if (ImportedMethods.XWFGetSize != null && ImportedMethods.XWFRead != null)
-            //if (ImportedMethods.XWF_Read != null)
-            try
-            {
-                // Get the size of the provided item.
-                long size = GetSize(hItem, ItemSizeType.PhysicalSize);
-
-                // Initialize and create a pointer to the buffer.
-                int bufferSize = (int)size;
-                IntPtr bufferPtr = Marshal.AllocHGlobal(bufferSize);
-
-                // Call XWF_Read to read the item into the buffer.
-                return Read(hItem, 0, bufferSize);
-            }
-            catch { }
-
-            return null;
         }
 
         /// <summary>
