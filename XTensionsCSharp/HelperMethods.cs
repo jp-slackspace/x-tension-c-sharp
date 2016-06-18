@@ -1592,12 +1592,99 @@ namespace XTensions
         /// integer number. Available in v18.5 and later. A helper method for
         /// XWF_GetUserInput().
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="suggestedInput"></param>
+        /// <param name="message">Presented to the user (truncated if too long) as an 
+        /// explanation for what is required.</param>
+        /// <param name="suggestedInput">Displayed in the input box as a suggestion.
+        /// </param>
+        /// <param name="options">User input options.</param>
         /// <returns></returns>
-        public static long GetUserInput(string message, string suggestedInput = null)
+        /// <remarks>
+        /// - Todo: Everything.
+        /// - Todo: What is too long for the message?</remarks>
+        public static string GetUserInput(string message, string suggestedInput = null,
+            UserInputOptions options = UserInputOptions.Unused)
         {
-            return 0;
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a progress indicator window with the specified caption. You should 
+        /// call PeekMessage, TranslateMessage, DispatchMessage occasionally to allow for 
+        /// the main window to remain responsive. You must not use any of the progress 
+        /// indicator methods when implementing XT_ProcessItem or XT_ProcessItemEx or 
+        /// when calling methods that create a progress bar themselves. A helper method
+        /// XWF_ShowProgress().
+        /// </summary>
+        /// <param name="progressCaption">Caption to display in the progress window.
+        /// </param>
+        /// <param name="options">Progress window options.</param>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.</remarks>
+        public static void ShowProgress(string progressCaption, ProgressIndicatorOptions
+            options)
+        {
+            ImportedMethods.XWF_ShowProgress(progressCaption, options);
+        }
+
+        /// <summary>
+        /// Sets the progress percentage. A helper method for 
+        /// XWF_SetProgressPrecentage().
+        /// </summary>
+        /// <param name="percent">The percent to display.</param>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.</remarks>
+        public static void SetProgressPercentage(uint percent)
+        {
+            ImportedMethods.XWF_SetProgressPercentage(percent);
+        }
+
+        /// <summary>
+        /// Displays descriptive text about the progress. A helper method for 
+        /// XWF_SetProgressDescription().
+        /// </summary>
+        /// <param name="description">The description to display.</param>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.</remarks>
+        public static void SetProgressDescription(string description)
+        {
+            ImportedMethods.XWF_SetProgressDescription(description);
+        }
+
+        /// <summary>
+        /// When a progress indicator window is on the screen and you call PeekMessage 
+        /// etc. regularly, you can use this function to check whether the user wants to 
+        /// abort the operation. A helper method for XWF_ShouldStop().
+        /// </summary>
+        /// <returns>Returns true if the user wants to stop; otherwise false.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.</remarks>
+        public static bool ShouldStop()
+        {
+            return ImportedMethods.XWF_ShouldStop();
+        }
+
+        /// <summary>
+        /// Closes the progress indicator window. A helper method for XWF_HideProgress().
+        /// </summary>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.</remarks>
+        public static void HideProgress()
+        {
+            ImportedMethods.XWF_HideProgress();
+        }
+
+        /// <summary>
+        /// Call this function to release a buffer allocated by X-Ways Forensics if 
+        /// instructed to do so in the description of another method.
+        /// </summary>
+        /// <param name="buffer">The buffer to release.</param>
+        /// <returns>Returns true if successful; otherwise false.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.
+        /// - Todo: Test provided buffer.</remarks>
+        public static bool ReleaseMemory(IntPtr buffer)
+        {
+            return ImportedMethods.XWF_ReleaseMem(buffer);
         }
 
         /// <summary>

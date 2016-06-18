@@ -302,6 +302,10 @@ namespace XTensions
             , OutputMessageOptions nFlags = 0);
         public static XWFOutputMessageDelegate OutputMessage;
 
+        public delegate void XWFGetUserInputDelegate([MarshalAs(UnmanagedType.LPWStr)]
+            string lpMessage, IntPtr lpBuffer, uint nBufferLen, UserInputOptions nFlags);
+        public static XWFGetUserInputDelegate XWF_GetUserInput;
+
         public delegate void XWFShowProgressDelegate(
               [MarshalAs(UnmanagedType.LPWStr)] string lpCaption
             , ProgressIndicatorOptions nFlags);
@@ -319,6 +323,9 @@ namespace XTensions
 
         public delegate void XWFHideProgressDelegate();
         public static XWFHideProgressDelegate XWF_HideProgress;
+
+        public delegate bool XWFReleaseMemDelegate(IntPtr lpBuffer);
+        public static XWFReleaseMemDelegate XWF_ReleaseMem;
 
         /// <summary>
         /// Imports methods from the XWF API.
@@ -591,6 +598,9 @@ namespace XTensions
                 OutputMessage = GetMethodDelegate<XWFOutputMessageDelegate>(
                     moduleHandle, "OutputMessage");
 
+                XWF_GetUserInput = GetMethodDelegate<XWFGetUserInputDelegate>(
+                    moduleHandle, "XWF_GetUserInput");
+
                 XWF_ShowProgress = GetMethodDelegate<XWFShowProgressDelegate>(
                     moduleHandle, "XWF_ShowProgress");
 
@@ -607,6 +617,9 @@ namespace XTensions
 
                 XWF_HideProgress = GetMethodDelegate<XWFHideProgressDelegate>(
                     moduleHandle, "XWF_HideProgress");
+
+                XWF_ReleaseMem = GetMethodDelegate<XWFReleaseMemDelegate>(
+                    moduleHandle, "XWF_RelaseMem");
             }
             catch(Exception e)
             {

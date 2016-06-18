@@ -723,6 +723,26 @@ namespace XTensions
     }
 
     /// <summary>
+    /// User input options.
+    /// </summary>
+    [Flags]
+    public enum UserInputOptions : uint
+    {
+        Unused = 0,
+        /// <summary>Requires the user to enter a positive integer number. That integer 
+        /// number is returned by this function. lpBuffer and nBufferLen must be 
+        /// NULL/zero. </summary>
+        RequirePositiveNumber = 1,
+        /// <summary>Empty user input allowed. Mutually exclusive with the previous flag.
+        /// </summary>
+        EmptyInputAllowed = 2,
+        /// <summary>Gives X-Ways Forensics a hint that the X-Tension is requesting a 
+        /// password, so that for example no screenshot of the dialog window is taken for 
+        /// the log.</summary>
+        PasswordRequested = 10
+    }
+
+    /// <summary>
     /// File Systems
     /// </summary>
     public enum VolumeFileSystem : int
