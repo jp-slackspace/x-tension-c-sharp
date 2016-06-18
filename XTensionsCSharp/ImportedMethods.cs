@@ -263,16 +263,21 @@ namespace XTensions
         */
 
         [return: MarshalAs(UnmanagedType.LPWStr)]
-        public delegate string XWFGetSearchTermDelegate(uint nSearchTermID
+        public delegate string XWFGetSearchTermDelegate(int nSearchTermID
             , IntPtr pReserved);
         public static XWFGetSearchTermDelegate XWF_GetSearchTerm;
+
+        [return: MarshalAs(UnmanagedType.SysInt)]
+        public delegate int XWFGetSearchTermCountDelegate(int nSearchTermID
+            , IntPtr pReserved);
+        public static XWFGetSearchTermCountDelegate XWF_GetSearchTermCount;
 
         /*
         public delegate uint XWFAddSearchHitDelegate();
         public static XWFAddSearchHitDelegate XWFAddSearchHit;
         */
 
-        public delegate uint XWFAddEventDelegate(EventInformation Evt);
+        public delegate int XWFAddEventDelegate(EventInformation Evt);
         public static XWFAddEventDelegate XWF_AddEvent;
 
         public delegate IntPtr XWFGetEventDelegate(uint nEventNo, EventInformation Evt);
@@ -558,6 +563,10 @@ namespace XTensions
 
                 XWF_GetSearchTerm = GetMethodDelegate<XWFGetSearchTermDelegate>(
                     moduleHandle, "XWF_GetSearchTerm");
+
+                XWF_GetSearchTermCount 
+                    = GetMethodDelegate<XWFGetSearchTermCountDelegate>(moduleHandle, 
+                    "XWF_GetSearchTerm");
 
                 /*
                 XWFAddSearchHit = GetMethodDelegate<XWFAddSearchHitDelegate>(

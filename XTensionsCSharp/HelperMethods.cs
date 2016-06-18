@@ -1385,23 +1385,8 @@ namespace XTensions
         /// <param name="information">Information about the search.</param>
         /// <param name="codePages">The code pages to use.</param>
         /// <returns></returns>
+        /// <remarks>Todo: Everything.</remarks>
         public static int Search(ref SearchInformation information, CodePages codePages)
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// Creates a new search term and returns its ID or (if flag 0x01 is specified) 
-        /// alternatively returns the ID of an existing search term with the same name, 
-        /// if any. Returns -1 in case of an error. The maximum number of search terms in 
-        /// a case is currently 8,191 (in v18.5). Use this function if you wish to 
-        /// automatically categorize search hits (assign them to different search terms) 
-        /// while responding to calls of ProcessSearchHit() or using SetSearchHit(). 
-        /// Available in v18.5 and later. A helper method for XWF_AddSearchTerm().
-        /// </summary>
-        /// <param name="SearchTermName"></param>
-        /// <returns></returns>
-        public static int AddSearchTerm(string SearchTermName)
         {
             return 0;
         }
@@ -1417,33 +1402,209 @@ namespace XTensions
         }
 
         /// <summary>
-        /// A helper method for XWF_OutputMessage().
+        /// Creates a new search term and returns its ID or (if flag 0x01 is specified) 
+        /// alternatively returns the ID of an existing search term with the same name, 
+        /// if any. Returns -1 in case of an error. The maximum number of search terms in 
+        /// a case is currently 8,191 (in v18.5). Use this function if you wish to 
+        /// automatically categorize search hits (assign them to different search terms) 
+        /// while responding to calls of ProcessSearchHit() or using SetSearchHit(). 
+        /// Available in v18.5 and later. A helper method for XWF_AddSearchTerm().
         /// </summary>
-        /// <param name="lpMessage"></param>
-        /// <param name="level"></param>
-        /// <param name="nFlags"></param>
-        public static void OutputMessage(
-            [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
-            , OutputMessageLevel level = OutputMessageLevel.Level1
-            , OutputMessageOptions nFlags = OutputMessageOptions.None)
+        /// <param name="SearchTermName"></param>
+        /// <returns></returns>
+        /// <remarks>Todo: Everything.</remarks>
+        public static int AddSearchTerm(string SearchTermName)
         {
-            string tab = new string(' ', (int)level * 4);
-            ImportedMethods.OutputMessage(tab + lpMessage, nFlags);
+            return 0;
         }
 
+        /// <summary>
+        /// Retrieves the search term with the specified ID, or null if no search term 
+        /// with that ID exists. All search terms have consecutive IDs starting with 0. 
+        /// Available in v17.7 and later. A helper method for XWF_GetSearchTerm().
+        /// </summary>
+        /// <returns>Returns the search term or null if no search exists with the 
+        /// specified Id.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs testing.</remarks>
+        public static string GetSearchTerm(int searchTermId)
+        {
+            if (searchTermId < 0) return null;
+
+            return ImportedMethods.XWF_GetSearchTerm(searchTermId, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Retrieves the total number of search terms. Available in v17.7 and later. A 
+        /// helper method for XWF_GetSearchTerm().
+        /// </summary>
+        /// <returns>Returns the total number of search terms.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs testing.</remarks>
+        public static int GetSearchTermCount()
+        {
+            return ImportedMethods.XWF_GetSearchTermCount(-1, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Allows adding events to the internal event hit list of an evidence object. 
+        /// The internal event is loaded and accessible only if the evidence object is 
+        /// open. Available in v17.6 and later. A helper method for XWF_AddEvent().
+        /// </summary>
+        /// <param name="information">The event information.</param>
+        /// <returns>Returns 1 if the event was successfully added, 2 if deliberatedly 
+        /// ignored, or 0 in case of failure to signal that the caller should stop adding
+        /// more events.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Needs testing.</remarks>
+        public static int AddEvent(EventInformation information)
+        {
+            return ImportedMethods.XWF_AddEvent(information);
+        }
+
+        /// <summary>
+        /// Retrieves information about an event from the internal event hit list of an 
+        /// evidence object. The internal event is loaded and accessible only if the 
+        /// evidence object is open. The structure will be populated with values as 
+        /// described above, except where noted. Available in v18.1 and later. A helper
+        /// method for XWF_GetEvent().
+        /// </summary>
+        /// <param name="EventNumber">The event number.</param>
+        /// <returns></returns>
+        /// <remarks>Todo: Everything.</remarks>
+        public static EventInformation GetEvent(int EventNumber)
+        {
+            EventInformation Information = new EventInformation();
+
+            return Information;
+        }
+
+        /// <summary>
+        /// Creates a new or opens an existing evidence file container. Currently only 1 
+        /// container can be open at a time for filling. If a container is open already 
+        /// when this function is called, it will be closed automatically. Available in 
+        /// v16.5 and later. A helper method for XWF_CreateContainer().
+        /// </summary>
+        /// <param name="containerFileName">The file to use for the container.</param>
+        /// <param name="options">Container creation options.</param>
+        /// <returns>Returns a pointer to the container.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Need testing.</remarks>
+        public static IntPtr CreateContainer(string containerFileName
+            , ContainerCreationOptions options)
+        {
+            return ImportedMethods.XWF_CreateContainer(containerFileName, options
+                , IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Copies a file to an evidence file container. Available in v16.5 and later. A
+        /// helper method for XWF_CopyToContainer().
+        /// </summary>
+        /// <param name="container">A pointer to the container to copy to.</param>
+        /// <param name="item">A pointer to the item that is being copied.</param>
+        /// <param name="options">The copy options.</param>
+        /// <param name="mode">The copy mode.</param>
+        /// <param name="startOffset">For modes that require it, the starting offset. 
+        /// Otherwise should be -1.</param>
+        /// <param name="endOffset">For modes that require it, the ending offset; 
+        /// otherwise should be -1.</param>
+        /// <returns>Returns 0 if successful, otherwise an error code. If the error code 
+        /// is negative, you should not try to fill the container further.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.
+        /// - Todo: Make structure for start and end offset.
+        /// - Todo: What are the possible error codes?</remarks>
+        public static int CopyToContainer(IntPtr container, IntPtr item
+            , CopyToContainerOptions options, CopyToContainerMode mode, 
+            long startOffset = -1, long endOffset = -1)
+        {
+            return ImportedMethods.XWF_CopyToContainer(container, item, options, mode
+                , startOffset, endOffset, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Closes a container. Available in v16.5 and later. A helper method for 
+        /// XWF_CloseContainer().
+        /// </summary>
+        /// <param name="container">A pointer to the container to close.</param>
+        /// <returns>Returns 1 if succesful.</returns>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Testing.
+        /// - Todo: Check for provided pointer.</remarks>
+        public static int CloseContainer(IntPtr container)
+        {
+            return ImportedMethods.XWF_CloseContainer(container, IntPtr.Zero);
+        }
+
+        /// <summary>
+        /// Outputs the specified message in the Messages window. You may use this 
+        /// function for example to alert the user of errors or to output debug 
+        /// information. A helper method for XWF_OutputMessage().
+        /// </summary>
+        /// <param name="message">The message to print.</param>
+        /// <param name="level">The level of the message; adds 4 spaces for each level.
+        /// </param>
+        /// <param name="options">Message options.</param>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Maybe add level to the options enum?
+        /// - Todo: Not sure we need to marshal the string; test.</remarks>
+        public static void OutputMessage(
+            [MarshalAs(UnmanagedType.LPWStr)] string message
+            , OutputMessageLevel level = OutputMessageLevel.Level1
+            , OutputMessageOptions options = OutputMessageOptions.None)
+        {
+            string tab = new string(' ', (int)level * 4);
+            ImportedMethods.OutputMessage(tab + message, options);
+        }
+
+        /// <summary>
+        /// Outputs a new line to the Messages window. A helper method for 
+        /// XWF_OutputMessage().
+        /// </summary>
+        /// <remarks>Version 1.0 coding complete.</remarks>
         public static void OutputEmptyLine()
         {
             OutputMessage("");
         }
 
+        /// <summary>
+        /// Outputs a header line to the Messages window. A helper method for 
+        /// XWF_OutputMessage().
+        /// </summary>
+        /// <param name="message">The message to print.</param>
+        /// <param name="level">The level of the message; adds 4 spaces for each level.
+        /// </param>
+        /// <remarks>Version 1.0 coding complete.
+        /// - Todo: Maybe include options and combine level with them.
+        /// - Todo: Not sure we need the marshal for the message; test.</remarks>
         public static void OutputHeader(
-            [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
+            [MarshalAs(UnmanagedType.LPWStr)] string message
             , OutputMessageLevel level = OutputMessageLevel.Level1)
         {
-            OutputMessage(lpMessage, level);
+            OutputMessage(message, level);
             OutputMessage("");
         }
 
+        /// <summary>
+        /// Requests user input through a dialog window provided by X-Ways Forensics. 
+        /// This input can be text (e.g. a password) or can be directly interpreted as an 
+        /// integer number. Available in v18.5 and later. A helper method for
+        /// XWF_GetUserInput().
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="suggestedInput"></param>
+        /// <returns></returns>
+        public static long GetUserInput(string message, string suggestedInput = null)
+        {
+            return 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ba"></param>
+        /// <returns></returns>
         public static string Hexlify(byte[] ba)
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);
@@ -1455,6 +1616,10 @@ namespace XTensions
             return hex.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static ArrayList GetCaseEvidence()
         {
             ArrayList evidence = new ArrayList();
