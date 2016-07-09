@@ -139,21 +139,11 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("");
             HelperMethods.OutputMessage("XWF_Close Test:");
 
-            if (HelperMethods.CloseItem(hItem1))
-            {
-                HelperMethods.OutputMessage("Item 1 closed");
-            } else
-            {
-                HelperMethods.OutputMessage("Item 1 doesn't exist to close.");
-            }
+            HelperMethods.CloseItem(hItem1);
+            HelperMethods.OutputMessage("Item 1 closed");
 
-            if (HelperMethods.CloseItem(hItem2))
-            {
-                HelperMethods.OutputMessage("Item 2 closed");
-            } else
-            {
-                HelperMethods.OutputMessage("Item 2 doesn't exist to close.");
-            }
+            HelperMethods.CloseItem(hItem2);
+            HelperMethods.OutputMessage("Item 2 closed");
 
             // XWF_GetFirstEvObj, XWF_GetNextEvObj, and GetCaseEvidence, XWF_OpenEvObj,
             // XWF_CloseEvObj, XWF_GetEvObjProp test.

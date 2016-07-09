@@ -119,7 +119,7 @@ namespace XTensions
         public delegate uint XWFGetItemCountDelegate(IntPtr pReserved);
         public static XWFGetItemCountDelegate XWF_GetItemCount;
 
-        public delegate uint XWFGetFileCountDelegate(uint nDirID);
+        public delegate uint XWFGetFileCountDelegate(int nDirID);
         public static XWFGetFileCountDelegate XWF_GetFileCount;
 
         /*

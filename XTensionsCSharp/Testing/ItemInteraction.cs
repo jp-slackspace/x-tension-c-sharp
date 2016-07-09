@@ -64,27 +64,13 @@ namespace XTensions.Testing
                 + itemSize, OutputMessageLevel.Level4);
 
             // Close the open items.
-            if (HelperMethods.CloseItem(LogicalItem))
-            {
-                HelperMethods.OutputMessage("Logical item closed."
-                    , OutputMessageLevel.Level4);
-            }
-            else
-            {
-                HelperMethods.OutputMessage("Logical item couldn't be closed."
-                    , OutputMessageLevel.Level4);
-            }
-            if (HelperMethods.CloseItem(LogicalSlackItem))
-            {
-                HelperMethods.OutputMessage("Logical item with slack closed."
-                    , OutputMessageLevel.Level4);
-            }
-            else
-            {
-                HelperMethods.OutputMessage(
-                    "Logical item with slack couldn't be closed."
-                    , OutputMessageLevel.Level4);
-            }
+            HelperMethods.CloseItem(LogicalItem);
+            HelperMethods.OutputMessage("Logical item closed."
+                , OutputMessageLevel.Level4);
+
+            HelperMethods.CloseItem(LogicalSlackItem);
+            HelperMethods.OutputMessage("Logical item with slack closed."
+                , OutputMessageLevel.Level4);
 
             // Not sure we need this.
             //HelperMethods.XWF_SelectVolumeSnapshot(volume);
