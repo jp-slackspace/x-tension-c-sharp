@@ -16,33 +16,32 @@ namespace XTensions.Testing
         /// <returns></returns>
         public static void RunTest(IntPtr hVolume, XTensionActionSource nOpType)
         {
-            HelperMethods.OutputHeader("BLOCK MANIPULATION TESTING MODULE"
-                , OutputMessageLevel.Level1);
+            HelperMethods.OutputMessage("BLOCK MANIPULATION TESTING MODULE", 
+                OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
             // XWF_GetBlock test.
-            HelperMethods.OutputHeader("XWF_GetBlock() Test"
-                , OutputMessageLevel.Level2);
+            HelperMethods.OutputMessage("XWF_GetBlock() Test", 
+                OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             BlockBoundaries blockBoundaries = HelperMethods.GetBlock(hVolume);
 
             if (blockBoundaries.EndOffset == -1)
             {
-                HelperMethods.OutputMessage("No block defined."
-                    , OutputMessageLevel.Level3);
+                HelperMethods.OutputMessage("No block defined.", 
+                    OutputMessageOptions.Level3);
             }
             else
             {
                 HelperMethods.OutputMessage(String.Format(
-                    "Block defined from offsets {0} to {1}", 
-                    blockBoundaries.StartOffset, blockBoundaries.EndOffset)
-                    , OutputMessageLevel.Level3);
+                    "Block defined from offsets {0} to {1}", blockBoundaries.StartOffset, 
+                    blockBoundaries.EndOffset), OutputMessageOptions.Level3);
             }
 
-            HelperMethods.OutputEmptyLine();
+            HelperMethods.OutputMessage("");
 
             // XWF_SetBlock test.
-            HelperMethods.OutputHeader("XWF_SetBlock() Test"
-                , OutputMessageLevel.Level2);
+            HelperMethods.OutputMessage("XWF_SetBlock() Test", 
+                OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             BlockBoundaries newBoundaries;
             newBoundaries.StartOffset = 4;
@@ -53,13 +52,13 @@ namespace XTensions.Testing
 
             if (blockBoundaries.Equals(newBoundaries))
             {
-                HelperMethods.OutputMessage("Block successfully created."
-                    , OutputMessageLevel.Level3);
+                HelperMethods.OutputMessage("Block successfully created.", 
+                    OutputMessageOptions.Level3);
             }
             else
             {
-                HelperMethods.OutputMessage("Block creation failed."
-                    , OutputMessageLevel.Level3);
+                HelperMethods.OutputMessage("Block creation failed.", 
+                    OutputMessageOptions.Level3);
             }
 
             newBoundaries.StartOffset = 0;
@@ -69,16 +68,16 @@ namespace XTensions.Testing
 
             if (blockBoundaries.Equals(newBoundaries))
             {
-                HelperMethods.OutputMessage("Block successfully cleared."
-                    , OutputMessageLevel.Level3);
+                HelperMethods.OutputMessage("Block successfully cleared.", 
+                    OutputMessageOptions.Level3);
             }
             else
             {
-                HelperMethods.OutputMessage("Block clearing failed."
-                    , OutputMessageLevel.Level3);
+                HelperMethods.OutputMessage("Block clearing failed.", 
+                    OutputMessageOptions.Level3);
             }
 
-            HelperMethods.OutputEmptyLine();
+            HelperMethods.OutputMessage("");
         }
     }
 }

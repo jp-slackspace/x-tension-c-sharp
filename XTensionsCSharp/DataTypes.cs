@@ -570,11 +570,25 @@ namespace XTensions
         Level4 = 3
     }
 
-    /// <summary>
-    /// Message window output (XWFOutputMessage) flags.
-    /// </summary>
     [Flags]
     public enum OutputMessageOptions : uint
+    {
+        None = 0,
+        NoLineBreak = 0x01u,
+        DoNotLogError = 0x02u,
+        Ansi = 0x04u,
+        Header = 0x08u,
+        Level1 = 0x010u,
+        Level2 = 0x020u,
+        Level3 = 0x040u,
+        Level4 = 0x080u,
+    }
+    
+    /// <summary>
+    /// API-specific output message options.
+    /// </summary>
+    [Flags]
+    public enum OutputMessageOptions_XWF : uint
     {
         None = 0x00000000u,
         /// <summary>Append without a line break.</summary>
@@ -586,21 +600,22 @@ namespace XTensions
     }
 
     /// <summary>
-    /// Progress indicator flags; used with XWF_ShowProgress.
+    /// Progress indicator flags; used with ShowProgress().
     /// </summary>
     [Flags]
     public enum ProgressIndicatorOptions : uint
     {
+        None = 0,
         /// <summary>Show just the window, no actual progress bar.</summary>
-        WindowOnly = 0x00000001u,
+        WindowOnly = 0x01u,
         /// <summary>Do not allow the user to interrupt the operation.</summary>
-        DisallowInterrupting = 0x00000002u,
+        DisallowInterrupting = 0x02u,
         /// <summary>Show window immediately.</summary>
-        ShowImmediately = 0x00000004u,
+        ShowImmediately = 0x04u,
         /// <summary>Double-confirm abort.</summary>
-        DoubleConfirmAbort = 0x00000008u,
+        DoubleConfirmAbort = 0x08u,
         /// <summary>Prevent logging.</summary>
-        PreventLogging = 0x00000010u
+        PreventLogging = 0x010u
     }
 
     /// <summary>
@@ -893,16 +908,16 @@ namespace XTensions
     public struct EventInformation
     {
         /// <summary>Size of the structure.</summary>
-        public int Size;
+        public uint Size;
         /// <summary>Pointer to the related evidence.</summary>
         public IntPtr Evidence;
         /// <summary>Event type.</summary>
-        public int EventType; // need enum for this
-        public uint Flags; // need enum for this
+        public uint Type; // need enum for this
+        public uint Options; // need enum for this
         /// <summary>Event timestamp.</summary>
         public System.Runtime.InteropServices.ComTypes.FILETIME TimeStamp;
         /// <summary>Item ID of item related to the event, otherwise -1.</summary>
-        public uint ItemID;
+        public int ItemID;
         /// <summary>Offset where the timestamp was found in the volume or (if nItemID 
         /// unequal to -1) within the object in the volume snapshot. -1 if unknown.
         /// </summary>
@@ -910,7 +925,6 @@ namespace XTensions
         /// <summary>Optional null-terminated textual description of the event, 
         /// preferably in 7-bit ASCII or else in UTF-8. Will be truncated internally 
         /// after 255 bytes. NULL if not provided.</summary>
-        [MarshalAs(UnmanagedType.LPWStr)]
         public string Description;
     };
 

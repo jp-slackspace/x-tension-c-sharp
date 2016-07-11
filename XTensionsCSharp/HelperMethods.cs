@@ -13,17 +13,17 @@ namespace XTensions
         private static readonly int _itemTypeDescriptionBufferLength = 1024 * 2;
         private static readonly int _casePropertiesLength = 1024 * 2;
         private static readonly int _eventObjectPropertiesLength = 128 * 2;
+        private static readonly uint _userInputLength = 1024 * 2;
 
         /// <summary>
         /// Returns the size of the volume or physical size of the file to which you 
         /// provide a handle. A helper method for XWF_GetSize().
         /// </summary>
         /// <param name="volumeOrItem">A pointer to a volume or item.</param>
-        /// <param name="sizeType">The type (XWFGetSizeType) of size to retrieve. 
-        /// Supported from v16.7 SR-8.</param>
+        /// <param name="sizeType">The type of size to retrieve. The default is 
+        /// ItemSizeType.PhysicalSize.  Supported from v16.7 SR-8.</param>
         /// <returns>Returns the size of the volume or physical size of the file.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static long GetSize(IntPtr volumeOrItem, ItemSizeType sizeType
             = ItemSizeType.PhysicalSize)
         {
@@ -35,14 +35,13 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Retrieves the UTF-16 name of the provided volume, using 255 characters at 
-        /// most. A helper method for XWF_GetVolumeName().
+        /// Retrieves the name of the provided volume, using 255 characters at most. A 
+        /// helper method for XWF_GetVolumeName().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
-        /// <param name="volumeNameType">The volume name type (XWFVolumeNameType) to
-        /// return.</param>
+        /// <param name="volumeNameType">The volume name type to return.  The default is
+        /// VolumeNameType.Type1.</param>
         /// <returns>Returns the volume name in the type specified.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static string GetVolumeName(IntPtr volume, VolumeNameType volumeNameType 
             = VolumeNameType.Type1)
         {
@@ -67,7 +66,6 @@ namespace XTensions
         /// <param name="volume">A pointer to a volume.</param>
         /// <returns>Returns the volume information in a VolumeInformation struct.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static VolumeInformation GetVolumeInformation(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
@@ -91,7 +89,6 @@ namespace XTensions
         /// <param name="volume">A pointer to a volume.</param>
         /// <returns>Returns the block boundaries in a BlockBoundaries struct.  These 
         /// boundaries will be 0 and -1 respectively if no block is selected.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static BlockBoundaries GetBlock(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
@@ -116,7 +113,6 @@ namespace XTensions
         /// and ending offsets of the new block.</param>
         /// <returns>Returns True if successful and False if the provided boundaries 
         /// exceed the size of the volume.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static bool SetBlock(IntPtr volume, BlockBoundaries boundaries)
         {
             // Fail if a volume pointer wasn't provided.
@@ -132,7 +128,6 @@ namespace XTensions
         /// Clear an existing block. A helper method for XWF_ClearBlock().
         /// </summary>
         /// <param name="volume">A pointer to a volume.</param>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static void ClearBlock(IntPtr volume)
         {
             // Fail if a volume pointer wasn't provided.
@@ -151,7 +146,6 @@ namespace XTensions
         /// <param name="sectorNumber">The sector number.</param>
         /// <returns>Returns the sector information in a SectorInformation struct.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static SectorInformation GetSectorContents(IntPtr volume
             , long sectorNumber)
         {
@@ -185,7 +179,6 @@ namespace XTensions
         /// <param name="options">Options for opening, using ItemOpenModes flag.</param>
         /// <returns>Returns a handle to the open item, or IntPtr.Zero if unsuccessful
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr OpenItem(IntPtr volume, long itemId, ItemOpenModes options 
             = ItemOpenModes.LogicalContents)
         {
@@ -213,7 +206,6 @@ namespace XTensions
         /// </summary>
         /// <param name="volumeOrItem">An open volume or item.</param>
         /// <returns>Returns true if a successfull, otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static void CloseItem(IntPtr volumeOrItem)
         {
             // Fail if a volume or item pointer weren't provided.
@@ -231,7 +223,6 @@ namespace XTensions
         /// <param name="offset">The offset to read from.</param>
         /// <param name="numberOfBytesToRead">The number of bytes to read.</param>
         /// <returns>Returns a byte array of the bytes read.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static byte[] Read(IntPtr volumeOrItem, long offset = 0
             , int numberOfBytesToRead = 0)
         {
@@ -267,11 +258,8 @@ namespace XTensions
         /// </summary>
         /// <param name="item">The specified item.</param>
         /// <returns>Returns a byte array of the item's contents.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.
-        /// - Todo: Check size of item to make sure it's not bigger than what an int can 
-        /// represent.
-        /// </remarks>
+        /// <remarks>Needs Testing. Also need to check size of item to make sure it's 
+        /// not bigger than what an int can represent.</remarks>
         public static byte[] ReadItem(IntPtr item)
         {
             // Fail if a volume or item pointer weren't provided.
@@ -290,8 +278,7 @@ namespace XTensions
         /// XWF_GetCaseProp().
         /// </summary>
         /// <returns>Returns a CaseProperties structure.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Test for when no case is loaded..</remarks>
+        /// <remarks>Test for when no case is loaded.</remarks>
         public static CaseProperties? GetCaseProperties()
         {
             long Status;
@@ -342,7 +329,6 @@ namespace XTensions
         /// <returns>Returns a pointer to the first evidence objector, or NULL if the 
         /// active case has no evidence objects or (in releases from June 2016) if no 
         /// case is active.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr GetFirstEvidenceObject()
         {
             return ImportedMethods.XWF_GetFirstEvObj(IntPtr.Zero);
@@ -355,7 +341,6 @@ namespace XTensions
         /// </summary>
         /// <param name="previousEvidence">Previous evidence object.</param>
         /// <returns>Returns a pointer to the next evidence object.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr GetNextEvidenceObject(IntPtr previousEvidence)
         {
             // Handle case where zero pointer is provided.
@@ -372,7 +357,6 @@ namespace XTensions
         /// </summary>
         /// <returns>Returns an array of all evidence object pointers for the current 
         /// case.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static ArrayList GetCaseEvidence()
         {
             ArrayList evidence = new ArrayList();
@@ -403,7 +387,6 @@ namespace XTensions
         /// </param>
         /// <returns>Returns the first evidence object created, or NULL in case of an
         /// error.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr CreateEvidenceObject(EvidenceObjectType evidenceType
             , string objectPath = null)
         {
@@ -460,7 +443,6 @@ namespace XTensions
         /// <param name="options">EvidenceOpenOptions open options.</param>
         /// <returns>Returns a handle to the volume that the evidence object represents 
         /// or returns 0 if unsuccessful.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static IntPtr OpenEvidenceObject(IntPtr evidence
             , EvidenceOpenOptions options)
         {
@@ -473,7 +455,6 @@ namespace XTensions
         /// method for XWF_CloseEvObj().
         /// </summary>
         /// <param name="evidence">The evidence object to close.</param>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static void CloseEvidenceObject(IntPtr evidence)
         {
             ImportedMethods.XWF_CloseEvObj(evidence);
@@ -486,7 +467,6 @@ namespace XTensions
         /// </summary>
         /// <param name="evidence">A pointer to the evidence object.</param>
         /// <returns>Returns a EvidenceObjectProperites struct.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         public static EvidenceObjectProperties GetEvidenceObjectProperties(
             IntPtr evidence)
         {
@@ -644,7 +624,6 @@ namespace XTensions
         /// <param name="evidenceObjectId"></param>
         /// <returns>Returns a pointer to the evidence object corresponding to the 
         /// specified evidence object Id or NULL if not found.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
         private static IntPtr GetEvidenceObject(uint evidenceObjectId)
         {
             return ImportedMethods.XWF_GetEvObj(evidenceObjectId);
@@ -661,10 +640,9 @@ namespace XTensions
         /// <param name="informationOptions">ReportTableInformationOptions options.
         /// Should be ReportTableInformationOptions.None before v18.1.</param>
         /// <returns>Returns the name of a given report table or null if none.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Should I change the name to GetReportTableName?
-        /// - Todo: Right now catching exceptions; need to figure out what's happening.
-        /// - Todo: Need to test what happens when -1 if supplied.</remarks>
+        /// <remarks>Should I change the name to GetReportTableName? Right now catching 
+        /// exceptions; need to figure out what's happening. Need to test what happens 
+        /// when -1 if supplied.</remarks>
         public static string GetReportTableInformation(int reportTableId
             , ReportTableInformationOptions informationOptions)
         {
@@ -1525,8 +1503,7 @@ namespace XTensions
         /// </summary>
         /// <returns>Returns the search term or null if no search exists with the 
         /// specified Id.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Needs testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static string GetSearchTerm(int searchTermId)
         {
             if (searchTermId < 0) return null;
@@ -1539,8 +1516,7 @@ namespace XTensions
         /// helper method for XWF_GetSearchTerm().
         /// </summary>
         /// <returns>Returns the total number of search terms.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Needs testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static int GetSearchTermCount()
         {
             return ImportedMethods.XWF_GetSearchTermCount(-1, IntPtr.Zero);
@@ -1555,8 +1531,9 @@ namespace XTensions
         /// <returns>Returns 1 if the event was successfully added, 2 if deliberatedly 
         /// ignored, or 0 in case of failure to signal that the caller should stop adding
         /// more events.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Needs testing.</remarks>
+        /// <remarks>This one needs a lot of work. Specifically, need to figure out this 
+        /// EventInformation structure and how to make sure it is compatible with the 
+        /// API. Also should make an enum for the return.</remarks>
         public static int AddEvent(EventInformation information)
         {
             return ImportedMethods.XWF_AddEvent(information);
@@ -1570,9 +1547,11 @@ namespace XTensions
         /// method for XWF_GetEvent().
         /// </summary>
         /// <param name="EventNumber">The event number.</param>
-        /// <returns></returns>
-        /// <remarks>Todo: Everything.</remarks>
-        public static EventInformation GetEvent(int EventNumber)
+        /// <returns>Returns the event information.</returns>
+        /// <remarks>This one needs a lot of work. Specifically, need to figure out this 
+        /// EventInformation structure and how to make sure it is compatible with the 
+        /// API.</remarks>
+        public static EventInformation GetEvent(uint EventNumber)
         {
             EventInformation Information = new EventInformation();
 
@@ -1585,14 +1564,18 @@ namespace XTensions
         /// when this function is called, it will be closed automatically. Available in 
         /// v16.5 and later. A helper method for XWF_CreateContainer().
         /// </summary>
-        /// <param name="containerFileName">The file to use for the container.</param>
+        /// <param name="containerFileName">The file name to use for the container.
+        /// </param>
         /// <param name="options">Container creation options.</param>
         /// <returns>Returns a pointer to the container.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Need testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static IntPtr CreateContainer(string containerFileName
             , ContainerCreationOptions options)
         {
+            // Fail if no container file name is provided.
+            if (containerFileName == null || containerFileName == "")
+                throw new ArgumentException("Container file name must be provided.");
+
             return ImportedMethods.XWF_CreateContainer(containerFileName, options
                 , IntPtr.Zero);
         }
@@ -1611,30 +1594,43 @@ namespace XTensions
         /// otherwise should be -1.</param>
         /// <returns>Returns 0 if successful, otherwise an error code. If the error code 
         /// is negative, you should not try to fill the container further.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.
-        /// - Todo: Make structure for start and end offset.
-        /// - Todo: What are the possible error codes?</remarks>
-        public static int CopyToContainer(IntPtr container, IntPtr item
-            , CopyToContainerOptions options, CopyToContainerMode mode, 
+        /// <remarks>Needs testing.</remarks>
+        public static int CopyToContainer(IntPtr container, IntPtr item, 
+            CopyToContainerOptions options, CopyToContainerMode mode, 
             long startOffset = -1, long endOffset = -1)
         {
+            // Fail if a zero container provided.
+            if (container == IntPtr.Zero) throw new ArgumentException(
+                "Zero container provided");
+
+            // Fail if a item container provided.
+            if (item == IntPtr.Zero) throw new ArgumentException(
+                "Zero item provided");
+
             return ImportedMethods.XWF_CopyToContainer(container, item, options, mode
                 , startOffset, endOffset, IntPtr.Zero);
         }
 
         /// <summary>
         /// Closes a container. Available in v16.5 and later. A helper method for 
-        /// XWF_CloseContainer().
+        /// CloseContainer().
         /// </summary>
         /// <param name="container">A pointer to the container to close.</param>
-        /// <returns>Returns 1 if succesful.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.
-        /// - Todo: Check for provided pointer.</remarks>
-        public static int CloseContainer(IntPtr container)
+        /// <returns>Returns true if succesful, otherwise false.</returns>
+        /// <remarks>Needs testing.</remarks>
+        public static bool CloseContainer(IntPtr container)
         {
-            return ImportedMethods.XWF_CloseContainer(container, IntPtr.Zero);
+            // Fail if a zero container provided.
+            if (container == IntPtr.Zero) throw new ArgumentException(
+                "Zero container provided");
+
+            // Return true if the API call yields 1.
+            if (ImportedMethods.XWF_CloseContainer(container, IntPtr.Zero) == 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1643,47 +1639,56 @@ namespace XTensions
         /// information. A helper method for XWF_OutputMessage().
         /// </summary>
         /// <param name="message">The message to print.</param>
-        /// <param name="level">The level of the message; adds 4 spaces for each level.
-        /// </param>
-        /// <param name="options">Message options.</param>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Maybe add level to the options enum?
-        /// - Todo: Not sure we need to marshal the string; test.</remarks>
-        public static void OutputMessage(
-            [MarshalAs(UnmanagedType.LPWStr)] string message
-            , OutputMessageLevel level = OutputMessageLevel.Level1
-            , OutputMessageOptions options = OutputMessageOptions.None)
+        /// <param name="options">Output message options.</param>
+        /// <remarks>Needs testing.</remarks>
+        public static void OutputMessage(string message, OutputMessageOptions options = 
+            OutputMessageOptions.None)
         {
-            string tab = new string(' ', (int)level * 4);
-            ImportedMethods.OutputMessage(tab + message, options);
-        }
+            // Fail if a null string message is provided.
+            if (message == null) throw new ArgumentException(
+                "Null string provided");
 
-        /// <summary>
-        /// Outputs a new line to the Messages window. A helper method for 
-        /// XWF_OutputMessage().
-        /// </summary>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static void OutputEmptyLine()
-        {
-            OutputMessage("");
-        }
+            string tab;
 
-        /// <summary>
-        /// Outputs a header line to the Messages window. A helper method for 
-        /// XWF_OutputMessage().
-        /// </summary>
-        /// <param name="message">The message to print.</param>
-        /// <param name="level">The level of the message; adds 4 spaces for each level.
-        /// </param>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Maybe include options and combine level with them.
-        /// - Todo: Not sure we need the marshal for the message; test.</remarks>
-        public static void OutputHeader(
-            [MarshalAs(UnmanagedType.LPWStr)] string message
-            , OutputMessageLevel level = OutputMessageLevel.Level1)
-        {
-            OutputMessage(message, level);
-            OutputMessage("");
+            if ((options & OutputMessageOptions.Level4) != 0)
+            {
+                tab = new string(' ', 12);
+            }
+            else if ((options & OutputMessageOptions.Level3) != 0)
+            {
+                tab = new string(' ', 8);
+            }
+            else if ((options & OutputMessageOptions.Level2) != 0)
+            {
+                tab = new string(' ', 4);
+            }
+            else
+            {
+                tab = "";
+            }
+
+            // Tab out the message.
+            message = tab + message;
+
+            // Build the API-specific options.
+            OutputMessageOptions_XWF xwf_options = OutputMessageOptions_XWF.None;
+
+            if ((options & OutputMessageOptions.NoLineBreak) != 0)
+                xwf_options |= OutputMessageOptions_XWF.NoLineBreak;
+
+            if ((options & OutputMessageOptions.DoNotLogError) != 0)
+                xwf_options |= OutputMessageOptions_XWF.DoNotLogError;
+
+            if ((options & OutputMessageOptions.Ansi) != 0)
+                xwf_options |= OutputMessageOptions_XWF.Ansi;
+
+            ImportedMethods.OutputMessage(message, xwf_options);
+
+            // Output a blank line after the message for headers.
+            if ((options & OutputMessageOptions.Header) != 0)
+            {
+                ImportedMethods.OutputMessage("");
+            }
         }
 
         /// <summary>
@@ -1698,13 +1703,30 @@ namespace XTensions
         /// </param>
         /// <param name="options">User input options.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// - Todo: Everything.
-        /// - Todo: What is too long for the message?</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static string GetUserInput(string message, string suggestedInput = null,
             UserInputOptions options = UserInputOptions.Unused)
         {
-            return null;
+            // Fail if a null string message is provided.
+            if (message == null) throw new ArgumentException(
+                "Null string provided");
+
+            // Allocate a buffer to receive the user input
+            IntPtr Buffer = Marshal.AllocHGlobal((int)_userInputLength);
+
+            // If caller has provided suggest input, put it in the buffer.
+            if (suggestedInput != null)
+            {
+                Buffer = Marshal.StringToHGlobalUni(suggestedInput);
+            }
+
+            // Call the API function and get the user input, and clean up.
+            long InputLength = ImportedMethods.XWF_GetUserInput(message, Buffer, 
+                _userInputLength, options);
+            string UserInput = Marshal.PtrToStringUni(Buffer, (int) InputLength);
+            Marshal.FreeHGlobal(Buffer);
+
+            return UserInput;
         }
 
         /// <summary>
@@ -1713,29 +1735,30 @@ namespace XTensions
         /// the main window to remain responsive. You must not use any of the progress 
         /// indicator methods when implementing XT_ProcessItem or XT_ProcessItemEx or 
         /// when calling methods that create a progress bar themselves. A helper method
-        /// XWF_ShowProgress().
+        /// for XWF_ShowProgress().
         /// </summary>
         /// <param name="progressCaption">Caption to display in the progress window.
         /// </param>
         /// <param name="options">Progress window options.</param>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static void ShowProgress(string progressCaption, ProgressIndicatorOptions
-            options)
+            options = ProgressIndicatorOptions.None)
         {
+            // Fail if a null string is provided.
+            if (progressCaption == null) throw new ArgumentException(
+                "Null string provided");
+
             ImportedMethods.XWF_ShowProgress(progressCaption, options);
         }
 
         /// <summary>
-        /// Sets the progress percentage. A helper method for 
-        /// XWF_SetProgressPrecentage().
+        /// Set the progress percentage. A helper method for XWF_SetProgressPrecentage().
         /// </summary>
         /// <param name="percent">The percent to display.</param>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.</remarks>
-        public static void SetProgressPercentage(uint percent)
+        /// <remarks>Needs testing.</remarks>
+        public static void SetProgressPercentage(uint progressPercentage)
         {
-            ImportedMethods.XWF_SetProgressPercentage(percent);
+            ImportedMethods.XWF_SetProgressPercentage(progressPercentage);
         }
 
         /// <summary>
@@ -1743,10 +1766,13 @@ namespace XTensions
         /// XWF_SetProgressDescription().
         /// </summary>
         /// <param name="description">The description to display.</param>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static void SetProgressDescription(string description)
         {
+            // Fail if a null string is provided.
+            if (description == null) throw new ArgumentException(
+                "Null string provided");
+
             ImportedMethods.XWF_SetProgressDescription(description);
         }
 
@@ -1756,8 +1782,7 @@ namespace XTensions
         /// abort the operation. A helper method for XWF_ShouldStop().
         /// </summary>
         /// <returns>Returns true if the user wants to stop; otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static bool ShouldStop()
         {
             return ImportedMethods.XWF_ShouldStop();
@@ -1766,8 +1791,7 @@ namespace XTensions
         /// <summary>
         /// Closes the progress indicator window. A helper method for XWF_HideProgress().
         /// </summary>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static void HideProgress()
         {
             ImportedMethods.XWF_HideProgress();
@@ -1779,11 +1803,13 @@ namespace XTensions
         /// </summary>
         /// <param name="buffer">The buffer to release.</param>
         /// <returns>Returns true if successful; otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Testing.
-        /// - Todo: Test provided buffer.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static bool ReleaseMemory(IntPtr buffer)
         {
+            // Fail if a zero buffer provided.
+            if (buffer == IntPtr.Zero) throw new ArgumentException(
+                "Zero buffer provided");
+
             return ImportedMethods.XWF_ReleaseMem(buffer);
         }
 

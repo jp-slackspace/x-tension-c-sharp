@@ -299,10 +299,10 @@ namespace XTensions
 
         public delegate void XWFOutputMessageDelegate(
               [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
-            , OutputMessageOptions nFlags = 0);
+            , OutputMessageOptions_XWF nFlags = 0);
         public static XWFOutputMessageDelegate OutputMessage;
 
-        public delegate void XWFGetUserInputDelegate([MarshalAs(UnmanagedType.LPWStr)]
+        public delegate long XWFGetUserInputDelegate([MarshalAs(UnmanagedType.LPWStr)]
             string lpMessage, IntPtr lpBuffer, uint nBufferLen, UserInputOptions nFlags);
         public static XWFGetUserInputDelegate XWF_GetUserInput;
 

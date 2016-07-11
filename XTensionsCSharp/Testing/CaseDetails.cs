@@ -12,23 +12,24 @@ namespace XTensions.Testing
         /// <returns></returns>
         public static void RunTest(IntPtr hVolume, XTensionActionSource nOpType)
         {
-            HelperMethods.OutputHeader("CASE DETAILS TESTING MODULE"
-                , OutputMessageLevel.Level1);
+            HelperMethods.OutputMessage("CASE DETAILS TESTING MODULE", 
+                OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
             // XWF_GetCaseProp() test.
-            HelperMethods.OutputHeader("XWF_GetCaseProp() Test"
-                , OutputMessageLevel.Level2);
+            HelperMethods.OutputMessage("XWF_GetCaseProp() Test", 
+                OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             CaseProperties caseProps = HelperMethods.GetCaseProperties();
+
             HelperMethods.OutputMessage("Case Title: " + caseProps.CaseTitle
-                , OutputMessageLevel.Level3);
+                , OutputMessageOptions.Level3);
             HelperMethods.OutputMessage("Case Examiner: " + caseProps.CaseExaminer
-                , OutputMessageLevel.Level3);
+                , OutputMessageOptions.Level3);
             HelperMethods.OutputMessage("Case File Path: " 
-                + caseProps.CaseFilePath, OutputMessageLevel.Level3);
+                + caseProps.CaseFilePath, OutputMessageOptions.Level3);
             HelperMethods.OutputMessage("Case Directory: " 
-                + caseProps.CaseDirectory, OutputMessageLevel.Level3);
-            HelperMethods.OutputEmptyLine();
+                + caseProps.CaseDirectory, OutputMessageOptions.Level3);
+            HelperMethods.OutputMessage("");
         }
     }
 }
