@@ -619,6 +619,32 @@ namespace XTensions
     }
 
     /// <summary>
+    /// Raster image creation options.
+    /// </summary>
+    [Flags]
+    public enum RasterImageOptions : uint
+    {
+        None = 0,
+        /// <summary>Get a memory buffer that starts with an appropriate Windows Bitmap 
+        /// header.</summary>
+        GetWindowsBitmapBuffer = 0x01u,
+        /// <summary>Align line offsets at 4-byte boundaries.</summary>
+        AlignOnLONGBoundaries = 0x02u,
+        /// <summary>Vertically flip image, physically (reverse the order of pixel lines 
+        /// in the memory buffer).</summary>
+        VerticallyFlipImagePhysically = 0x04u,
+        /// <summary>Create a standard Windows BMP image (suitable combination of flags 
+        /// 0x01, 0x02, and 0x04).</summary>
+        CreateStandardWindowsBMP = 0x07u,
+        /// <summary>Vertically flip image, logically (only in conjunction with 0x01, 
+        /// using a negative height in the BMP header)</summary>
+        VerticallyFlipImageLogically = 0x08u,
+        /// <summary>Horizontally flip image, physically (reverse the order of the pixels
+        /// in each line in the memory buffer)</summary>
+        HorizontallyFlipImagePhysically = 0x10u,
+    }
+
+    /// <summary>
     /// Report table information flags.
     /// </summary>
     [Flags]
@@ -660,41 +686,41 @@ namespace XTensions
     {
         /// <summary>Logical search instead of physical search (only logical search 
         /// currently available)</summary>
-        XWF_SEARCH_LOGICAL = 0x00000001u,
+        LogicalSearch = 0x00000001u,
         /// <summary>Tagged objects in volume snapshot only</summary>
-        XWF_SEARCH_TAGGEDOBJ = 0x00000004u,
+        TaggedObjectsOnly = 0x00000004u,
         /// <summary>Case sensitive, i.e. match the case.</summary>
-        XWF_SEARCH_MATCHCASE = 0x00000010u,
+        CaseSensitive = 0x00000010u,
         /// <summary>Match whole words only.</summary>
-        XWF_SEARCH_WHOLEWORDS = 0x00000020u,
+        WholeWordsOnly = 0x00000020u,
         /// <summary>Use GREP syntax.</summary>
-        XWF_SEARCH_GREP = 0x00000040u,
+        GREP = 0x00000040u,
         /// <summary>Allow overlapping hits.</summary>
-        XWF_SEARCH_OVERLAPPED = 0x00000080u,
+        AllowOverlappingHits = 0x00000080u,
         /// <summary>Cover slack space.</summary>
-        XWF_SEARCH_COVERSLACK = 0x00000100u,
+        CoverSlackSpace = 0x00000100u,
         /// <summary>Cover slack/free space transition</summary>
-        XWF_SEARCH_COVERSLACKEX = 0x00000200u,
+        CoverSlackSpaceFreeSpaceTransition = 0x00000200u,
         /// <summary>Decode text in standard file types</summary>
-        XWF_SEARCH_DECODETEXT = 0x00000400u,
+        DecodeTextInStandardFileTypes = 0x00000400u,
         /// <summary>Decode text in specified file types (not yet supported)</summary>
-        XWF_SEARCH_DECODETEXTEX = 0x00000800u,
+        DecodeTextInSpecifiedFileTypes = 0x00000800u,
         /// <summary>Only one hit per file needed.</summary>
-        XWF_SEARCH_1HITPERFILE = 0x00001000u,
+        OnlyOneHitPerFile = 0x00001000u,
         /// <summary>Omit files classified as irrelevant.</summary>
-        XWF_SEARCH_OMITIRRELEVANT = 0x00010000u,
+        OmitIrrelevantFiles = 0x00010000u,
         /// <summary>Omit hidden files.</summary>
-        XWF_SEARCH_OMITHIDDEN = 0x00020000u,
+        OmitHiddenFiles = 0x00020000u,
         /// <summary>Omit files that are filtered out.</summary>
-        XWF_SEARCH_OMITFILTERED = 0x00040000u,
+        OmitFilteredFiles = 0x00040000u,
         /// <summary>Recommendable data reduction.</summary>
-        XWF_SEARCH_DATAREDUCTION = 0x00080000u,
+        RecommendableDataReduction = 0x00080000u,
         /// <summary>Omit directories.</summary>
-        XWF_SEARCH_OMITDIRS = 0x00100000u,
+        OmitDirectories = 0x00100000u,
         /// <summary>XT_ProcessSearchHit (if exported) will process each hit.</summary>
-        XWF_SEARCH_CALLPSH = 0x01000000u,
+        ProcessEachSearchHit = 0x01000000u,
         /// <summary>Display search hit list when the search completes.</summary>
-        XWF_SEARCH_DISPLAYHITS = 0x04000000u
+        DisplaySearchHitListOnCompletion = 0x04000000u
     }
 
     /// <summary>
@@ -717,6 +743,16 @@ namespace XTensions
         SpecificGREPSyntax = 0x00008000u
     }
 
+    [Flags]
+    public enum SearchTermOptions : uint
+    {
+        None = 0,
+        /// <summary>Allow re-use of existing search term of the same name.</summary>
+        ReUseExisting = 0x01u,
+        /// <summary>Mark search term as a search term for user search hits.</summary>
+        UserSearchTerm = 0x02u
+    }
+    
     /// <summary>
     /// Special item types.
     /// </summary>
@@ -887,18 +923,24 @@ namespace XTensions
     }
 
     /// <summary>
-    /// Code Pages.
+    /// Code Pages. Must specify 0 for unused code page numbers.
     /// </summary>
+    /// <remarks>Need enum for the code pages.</remarks>
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public struct CodePages
     {
         /// <summary>Size of the packed record.</summary>
-        public int Size;
-        public ushort CodePage1;
-        public ushort CodePage2;
-        public ushort CodePage3;
-        public ushort CodePage4;
-        public ushort CodePage5;
+        public int packedRecordSize;
+        /// <summary>Code page 1.</summary>
+        public ushort codePage1;
+        /// <summary>Code page 2.</summary>
+        public ushort codePage2;
+        /// <summary>Code page 3.</summary>
+        public ushort codePage3;
+        /// <summary>Code page 4.</summary>
+        public ushort codePage4;
+        /// <summary>Code page 5.</summary>
+        public ushort codePage5;
     };
 
     /// <summary>
@@ -1002,19 +1044,19 @@ namespace XTensions
     public struct RasterImageInformation
     {
         /// <summary>Size of the structure.</summary>
-        public int Size;
+        public int packedStructureSize;
         /// <summary>The item Id.</summary>
-        public IntPtr ItemId;
+        public int itemId;
         /// <summary>Pointer to the item.</summary>
-        public IntPtr Item;
+        public IntPtr item;
         /// <summary></summary>
-        public uint Options; // need enum for this
+        public RasterImageOptions options;
         /// <summary>Width of the image.</summary>
-        public uint Width;
+        public uint imageWidth;
         /// <summary>Height of the image.</summary>
-        public uint Height;
-        /// <summary>Unknown.</summary>
-        public uint ImageSize;
+        public uint imageHeight;
+        /// <summary>Size of the image in bytes.</summary>
+        public uint imageSizeInBytes;
     };
 
     /// <summary>
@@ -1053,20 +1095,19 @@ namespace XTensions
     public struct SearchInformation
     {
         /// <summary>Size of the packed record.</summary>
-        public int iSize;
+        public int packedRecordSize;
         /// <summary>Currently must be 0; function is always applied at the active
         /// volume.</summary>
-        public IntPtr hVolume;
-        /// <summary>The search terms delited by line breaks; added to the case if not
+        public IntPtr volume;
+        /// <summary>The search terms delimited by line breaks; added to the case if not
         /// currently existing.</summary>
-        [MarshalAs(UnmanagedType.LPWStr)]
-        public string lpSearchTerms;
+        public string searchTerms;
         /// <summary>Search options. Can only be combined as known from the user 
         /// interface. For example, GREP and whole words are mutually exclusive. 
-        /// Otherwise, the results is undefined.</summary>
-        public SearchInformationOptions nFlags;
+        /// Otherwise, the results are undefined.</summary>
+        public SearchInformationOptions searchOptions;
         /// <summary>Search window length. 0 for standard length.</summary>
-        public uint nSearchWindow;
+        public uint searchWindowLength;
     };
 
     /// <summary>

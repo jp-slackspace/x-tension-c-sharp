@@ -230,11 +230,18 @@ namespace XTensions
         public static XWFSetItemDataRunsDelegate XWF_SetItemDataRuns;
         */
 
+        /*
+        // DEPRECIATED
         [return: MarshalAs(UnmanagedType.LPWStr)]
         public delegate string XWFGetMetadataDelegate(int nItemID, IntPtr hItem);
         public static XWFGetMetadataDelegate XWF_GetMetadata;
+        */
 
-        public delegate IntPtr XWFGetRasterImageDelegate(RasterImageInformation RIInfo);
+        public delegate IntPtr XWFGetMetadataExDelegate(IntPtr hItem, uint lpnFlags);
+        public static XWFGetMetadataExDelegate XWF_GetMetadataEx;
+
+        public delegate IntPtr XWFGetRasterImageDelegate(
+            ref RasterImageInformation RIInfo);
         public static XWFGetRasterImageDelegate XWF_GetRasterImage;
 
         public delegate int XWFSearchDelegate(ref SearchInformation SInfo
@@ -256,11 +263,10 @@ namespace XTensions
         public static XWFGetSearchHitInfoDelegate XWFGetSearchHitInfo;
         */
 
-        /*
-        public delegate uint XWFAddSearchTermDelegate(
-            [MarshalAs(UnmanagedType.LPWStr)] string lpSearchTermDescr, uint nFlags);
+        public delegate int XWFAddSearchTermDelegate(
+            [MarshalAs(UnmanagedType.LPWStr)] string lpSearchTermDescr, 
+            SearchTermOptions nFlags);
         public static XWFAddSearchTermDelegate XWFAddSearchTerm;
-        */
 
         [return: MarshalAs(UnmanagedType.LPWStr)]
         public delegate string XWFGetSearchTermDelegate(int nSearchTermID
@@ -540,8 +546,14 @@ namespace XTensions
                     moduleHandle, "XWF_SetItemDataRuns");
                 */
 
+                /*
+                // DEPRECIATED IN V18.9
                 XWF_GetMetadata = GetMethodDelegate<XWFGetMetadataDelegate>(
                     moduleHandle, "XWF_GetMetadata");
+                */
+
+                XWF_GetMetadataEx = GetMethodDelegate < XWFGetMetadataExDelegate>(
+                    moduleHandle, "XWF_GetMetadataEx");
 
                 XWF_GetRasterImage = GetMethodDelegate<XWFGetRasterImageDelegate>(
                     moduleHandle, "XWF_GetRasterImage");

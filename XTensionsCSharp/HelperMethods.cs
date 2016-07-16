@@ -1263,11 +1263,18 @@ namespace XTensions
         /// <param name="reportTableName">The report table name.</param>
         /// <param name="options">Options to use for the association.</param>
         /// <returns>Returns the result of the assocation.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Needs testing.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static AddToReportTableResult AddToReportTable(int itemId
             , string reportTableName, AddToReportTableOptions options)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
+            // Fail if no metadata text provided.
+            if (reportTableName == null || reportTableName == "")
+                throw new ArgumentException("Report table name must be provided.");
+
             return ImportedMethods.XWF_AddToReportTable(itemId, reportTableName,
                 options);
         }
@@ -1278,24 +1285,18 @@ namespace XTensions
         /// </summary>
         /// <param name="itemId">The item ID.</param>
         /// <returns>Returns the comment.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Currently catching all exceptions; need to figure out what the
-        /// possible exceptions are.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static string GetComment(int itemId)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             string Comment;
 
-            try
-            {
-                IntPtr Buffer = ImportedMethods.XWF_GetComment(itemId);
-                Comment = Marshal.PtrToStringUni(Buffer);
-                Marshal.FreeHGlobal(Buffer);
-            }
-            catch (Exception e)
-            {
-                OutputMessage("Exception: " + e);
-                return null;
-            }
+            IntPtr Buffer = ImportedMethods.XWF_GetComment(itemId);
+            Comment = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
             return Comment;
         }
@@ -1304,13 +1305,22 @@ namespace XTensions
         /// Sets the comment of the given item. A helper method for XWF_AddComment().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
-        /// <param name="comment">The comment.</param>
+        /// <param name="commentText">The comment.</param>
         /// <param name="mode">Indicates how the comment should be added.</param>
-        /// <returns>Returns true if successfull, otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
-        public static bool AddComment(int itemId, string comment, AddCommentMode mode)
+        /// <returns>Returns true if successful, otherwise false.</returns>
+        /// <remarks>Need testing.</remarks>
+        public static bool AddComment(int itemId, string commentText, 
+            AddCommentMode mode)
         {
-            return ImportedMethods.XWF_AddComment(itemId, comment, mode);
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
+            // Fail if no metadata text provided.
+            if (commentText == null || commentText == "")
+                throw new ArgumentException("Comment text must be provided.");
+
+            return ImportedMethods.XWF_AddComment(itemId, commentText, mode);
         }
 
         /// <summary>
@@ -1320,25 +1330,18 @@ namespace XTensions
         /// </summary>
         /// <param name="itemId">The item Id.</param>
         /// <returns>Returns the previously extracted metadata.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Needs testing.
-        /// - Todo: Catching all exceptions, need to determine exception possiblities.
-        /// </remarks>
+        /// <remarks>Needs testing.</remarks>
         public static string GetExtractedMetadata(int itemId)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             string Metadata;
 
-            try
-            {
-                IntPtr Buffer = ImportedMethods.XWF_GetExtractedMetadata(itemId);
-                Metadata = Marshal.PtrToStringUni(Buffer);
-                Marshal.FreeHGlobal(Buffer);
-            }
-            catch (Exception e)
-            {
-                OutputMessage("Exception: " + e);
-                return null;
-            }
+            IntPtr Buffer = ImportedMethods.XWF_GetExtractedMetadata(itemId);
+            Metadata = Marshal.PtrToStringUni(Buffer);
+            Marshal.FreeHGlobal(Buffer);
 
             return Metadata;
         }
@@ -1348,15 +1351,22 @@ namespace XTensions
         /// Available in v17.7 and later. A helper method for XWF_AddExtractedMetadata().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
-        /// <param name="text">The text to add to the extracted metadata.</param>
+        /// <param name="metadataText">The text to add to the extracted metadata.</param>
         /// <param name="mode">Indicates how the metadata should be added.</param>
-        /// <returns>Returns true if successfull, otherwise false.</returns>
-        /// <remarks>Verion 1.0 coding complete.
-        /// - Todo: Test the method.</remarks>
-        public static bool AddExtractedMetadata(int itemId, string text
+        /// <returns>Returns true if successful, otherwise false.</returns>
+        /// <remarks>Needs testing.</remarks>
+        public static bool AddExtractedMetadata(int itemId, string metadataText
             , AddCommentMode mode)
         {
-            return ImportedMethods.XWF_AddExtractedMetadata(itemId, text, mode);
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
+            // Fail if no metadata text provided.
+            if (metadataText == null || metadataText == "")
+                throw new ArgumentException("Metadata text must be provided.");
+
+            return ImportedMethods.XWF_AddExtractedMetadata(itemId, metadataText, mode);
         }
 
         /// <summary>
@@ -1364,14 +1374,16 @@ namespace XTensions
         /// checked using GetItemInformation(). Available in v16.8 and later. A helper 
         /// method for XWF_GetHashValue().
         /// </summary>
-        /// <param name="itemId"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// - Todo: Needs testing and a lot of work.
-        /// - Todo: Check version
-        /// - Todo: Define variable for the buffer lenght.</remarks>
+        /// <param name="itemId">The Id of the file item.</param>
+        /// <returns>Returns the file hash.</returns>
+        /// <remarks>Needs testing. Check version. Define variable for the buffer length.
+        /// </remarks>
         public static string GetHashValue(int itemId)
         {
+            // Fail if item Id less than 0 provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             string Hash;
             IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
             ImportedMethods.XWF_GetHashValue(itemId, Buffer);
@@ -1380,7 +1392,9 @@ namespace XTensions
             return Hash;
         }
 
+        /*
         /// <summary>
+        /// DEPRECIATED IN V18.9
         /// Extracts internal metadata of a file to memory and returns a pointer to it if 
         /// successful, or NULL otherwise. The pointer is guaranteed to be valid only at 
         /// the time when you retrieve it. If you wish to do something with the text that 
@@ -1406,24 +1420,55 @@ namespace XTensions
             Marshal.FreeHGlobal(Buffer);
             return Metadata;
         }
+        */
+
+        /// <summary>
+        /// Can extract extensive internal metadata of files of various types, exactly as
+        /// seen in Details mode in X-Ways Forensics, typically much more than the now
+        /// depreciated GetMetadata(). Fills a memory buffer with either null-terminated 
+        /// UTF-16 plain text or null-terminated ASCII HTML code, and returns a pointer 
+        /// to it. You may parse the buffer to retrieve specific metadata that you need.
+        /// The format may theoretically change from one version to the other. You must 
+        /// release the allocated memory by passing that pointer to ReleaseMemory() when
+        /// you do not need it any more. If no metadata is extracted, the return value is
+        /// NULL instead.
+        /// 
+        /// Unlike the now depreciated GetMetadata(), this function is thread-safe.
+        /// Unlike GetExtractedMetadata(), the file must have been opened with OpenItem()
+        /// because this function reads from the file contents, not from data stored in 
+        /// the volume snapshot. The metadata is taken from the very file that contains 
+        /// it, for example in the case of zip-style Office documents, from the XML 
+        /// files. Available in v18.9 and later.
+        /// </summary>
+        /// <param name="item">A pointer to the item.</param>
+        /// <param name="options">Options for input and output. The only currently 
+        /// defined input flag is 0x01. It tells X-Ways Forensics to extract only a 
+        /// subset of the available metadata, as shown in the software in the Metadata column.</param>
+        /// <returns></returns>
+        /// <remarks>Needs testing.  Needs enum for options.</remarks>
+        public static IntPtr GetMetadataEx(IntPtr item, uint options)
+        {
+            return ImportedMethods.XWF_GetMetadataEx(item, options);
+        }
 
         /// <summary>
         /// Provides a standardized true-color RGB raster image representation for any 
         /// picture file type that is supported internally in X-Ways Forensics (e.g. 
-        /// JPEG, GIF, PNG, ...), with 24 bits per pixel. The result is a pointer to a 
+        /// JPEG, GIF, PNG, etc.) with 24 bits per pixel. The result is a pointer to a 
         /// memory buffer, or NULL if not successful (e.g. if not a supported file type 
         /// variant or the file is too corrupt). The caller is responsible for releasing 
         /// the allocated memory buffer when no longer needed, by calling the Windows API 
-        /// function VirtualFree, with parameters dwSize = 0 and dwFreeType = 
+        /// function VirtualFree(), with parameters dwSize = 0 and dwFreeType = 
         /// MEM_RELEASE. Available in v18.0 and later. A helper method for 
         /// XWF_GetRasterImage().
         /// </summary>
         /// <param name="ImageInformation">A structure of image information.</param>
         /// <returns>Returns a pointer to the raster image.</returns>
-        /// <remarks>Todo: Everything.</remarks>
-        public static IntPtr GetRasterImage(RasterImageInformation imageInformation)
+        /// <remarks>Needs testing. Also, should verify the provided 
+        /// RasterImageInformation structure.</remarks>
+        public static IntPtr GetRasterImage(ref RasterImageInformation imageInformation)
         {
-            return IntPtr.Zero;
+            return ImportedMethods.XWF_GetRasterImage(ref imageInformation);
         }
 
         /// <summary>
@@ -1432,51 +1477,37 @@ namespace XTensions
         /// function is called as part of volume snapshot refinement, it can be called 
         /// automatically for all selected evidence objects if the user applies the 
         /// X-Tension to all selected evidence objects. Must only be called from 
-        /// XT_Prepare or XT_Finalize. Available in v16.5 and later. A wrapper method for 
-        /// XWF_Search().
+        /// XT_Prepare() or XT_Finalize(). Available in v16.5 and later. A wrapper method
+        /// for XWF_Search().
         /// </summary>
         /// <param name="information">Information about the search.</param>
         /// <param name="codePages">The code pages to use.</param>
-        /// <returns></returns>
-        /// <remarks>Todo: Everything.</remarks>
-        public static int Search(ref SearchInformation information, CodePages codePages)
+        /// <returns>Returns result status.</returns>
+        /// <remarks>Needs testing.</remarks>
+        public static int Search(ref SearchInformation information, 
+            ref CodePages codePages)
         {
-            return 0;
+            return ImportedMethods.XWF_Search(ref information, ref codePages);
         }
 
         /// <summary>
-        /// 
+        /// Used to build the search information for Search().
         /// </summary>
-        /// <param name="searchTerms"></param>
-        /// <param name="flags"></param>
-        /// <returns></returns>
-        /// <remarks>- Todo: Everything.</remarks>
+        /// <param name="searchTerms">New-line separated search terms.</param>
+        /// <param name="searchOptions">Options for the search.</param>
+        /// <returns>Returns search information structure.</returns>
+        /// <remarks>Needs testing.</remarks>
         public static SearchInformation CreateSearchInfo(string searchTerms
-            , SearchInformationOptions flags)
+            , SearchInformationOptions searchOptions)
         {
-            SearchInformation info = new SearchInformation
-            {
-                hVolume = IntPtr.Zero //the docs say that hVolume should be 0
-                ,
-                lpSearchTerms = searchTerms
-                ,
-                nFlags = flags
-                ,
-                nSearchWindow = 0
-            };
+            SearchInformation Info = new SearchInformation();
 
-            info.iSize = Marshal.SizeOf(info);
-            return info;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="SInfo"></param>
-        /// <returns></returns>
-        public static int XWFSearchWithoutCodePages(ref SearchInformation SInfo)
-        {
-            return ImportedMethods.XWF_SearchWithPtrToPages(ref SInfo, IntPtr.Zero);
+            Info.volume = IntPtr.Zero; //the docs say that hVolume should be 0
+            Info.searchTerms = searchTerms;
+            Info.searchOptions = searchOptions;
+            Info.searchWindowLength = 0;
+            Info.packedRecordSize = Marshal.SizeOf(Info);
+            return Info;
         }
 
         /// <summary>
@@ -1489,11 +1520,17 @@ namespace XTensions
         /// Available in v18.5 and later. A helper method for XWF_AddSearchTerm().
         /// </summary>
         /// <param name="SearchTermName"></param>
-        /// <returns></returns>
-        /// <remarks>Todo: Everything.</remarks>
-        public static int AddSearchTerm(string SearchTermName)
+        /// <returns>Returns the Id of the new or existing search term or -1 in the case
+        /// of an error.</returns>
+        /// <remarks>Needs testing.</remarks>
+        public static int AddSearchTerm(string searchTermName, SearchTermOptions options
+            = SearchTermOptions.None)
         {
-            return 0;
+            // Fail if no search term name provided.
+            if (searchTermName == null || searchTermName == "")
+                throw new ArgumentException("Search term name must be provided.");
+
+            return ImportedMethods.XWFAddSearchTerm(searchTermName, options);
         }
 
         /// <summary>
