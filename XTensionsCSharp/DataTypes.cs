@@ -482,39 +482,39 @@ namespace XTensions
     public enum ItemInformationType : int
     {
         /// <summary>Original ID.</summary>
-        XWF_ITEM_INFO_ORIG_ID = 1,
+        OriginalId = 1,
         /// <summary>Attributes.</summary>
-        XWF_ITEM_INFO_ATTR = 2,
+        Attributes = 2,
         /// <summary>Flags.</summary>
-        XWF_ITEM_INFO_FLAGS = 3,
+        Options = 3,
         /// <summary>Deletion.</summary>
-        XWF_ITEM_INFO_DELETION = 4,
+        DeletionStatus = 4,
         /// <summary>e.g. extracted e-mail, alternate data stream, etc.</summary>
-        XWF_ITEM_INFO_CLASSIFICATION = 5,
+        Classification = 5,
         /// <summary>Hard-link count.</summary>
-        XWF_ITEM_INFO_LINKCOUNT = 6,
-        XWF_ITEM_INFO_COLORANALYSIS = 7,
+        LinkCount = 6,
+        ColorAnalysis = 7,
         /// <summary>Count of existing recursive child objects that are files.</summary>
-        XWF_ITEM_INFO_FILECOUNT = 11,
-        XWF_ITEM_INFO_EMBEDDEDOFFSET = 16,
+        FileCount = 11,
+        EmbeddedOffset = 16,
         /// <summary>Creation timestamp.</summary>
-        XWF_ITEM_INFO_CREATIONTIME = 32,
+        CreationTime = 32,
         /// <summary>Modification timestamp.</summary>
-        XWF_ITEM_INFO_MODIFICATIONTIME = 33,
+        ModificationTime = 33,
         /// <summary>Last access timestamp.</summary>
-        XWF_ITEM_INFO_LASTACCESSTIME = 34,
+        LastAccessTime = 34,
         /// <summary>Entry modification timestamp.</summary>
-        XWF_ITEM_INFO_ENTRYMODIFICATIONTIME = 35,
+        EntryModificationTime = 35,
         /// <summary>Deleation timestamp.</summary>
-        XWF_ITEM_INFO_DELETIONTIME = 36,
+        DeletionTime = 36,
         /// <summary>Internal creation timestamp.</summary>
-        XWF_ITEM_INFO_INTERNALCREATIONTIME = 37,
-        /// <summary>Indicates only flags that should be set, others should remain 
+        InternalCreationTime = 37,
+        /// <summary>Indicates only options that should be set; others should remain 
         /// unchanged.</summary>
-        XWF_ITEM_INFO_FLAGS_SET = 64,
-        /// <summary>Indicates flags that should be removed, others should remain 
+        SetOptions = 64,
+        /// <summary>Indicates options that should be removed; others should remain 
         /// unchanged.</summary>
-        XWF_ITEM_INFO_FLAGS_REMOVE = 65,
+        RemoveOptions = 65,
     }
 
     /// <summary>
@@ -1006,21 +1006,21 @@ namespace XTensions
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
     public struct ItemInformation
     {
-        public long OriginalItemID;
-        public long Attributes;
-        public ItemInformationOptions Flags;
-        public ItemDeletionStatus Deletion;
-        public ItemClassifiction Classification;
-        public long LinkCount;
-        public long ColorAnalysis;
-        public long FileCount;
-        public long EmbeddedOffset;
-        public DateTime CreationTime;
-        public DateTime ModificationTime;
-        public DateTime LastAccessTime;
-        public DateTime EntryModificationTime;
-        public DateTime DeletionTime;
-        public DateTime InternalCreationTime;
+        public long originalItemID;
+        public long attributes;
+        public ItemInformationOptions options;
+        public ItemDeletionStatus deletionStatus;
+        public ItemClassifiction classification;
+        public long linkCount;
+        public long colorAnalysis;
+        public long fileCount;
+        public long embeddedOffset;
+        public DateTime creationTime;
+        public DateTime modificationTime;
+        public DateTime lastAccessTime;
+        public DateTime entryModificationTime;
+        public DateTime deletionTime;
+        public DateTime internalCreationTime;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]

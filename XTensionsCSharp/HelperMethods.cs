@@ -990,6 +990,7 @@ namespace XTensions
         {
             long itemOffset;
 
+
             if (itemOffsets.FileSystemDataStructureOffset != -1)
             {
                 itemOffset = itemOffsets.FileSystemDataStructureOffset;
@@ -1020,78 +1021,82 @@ namespace XTensions
         /// <remarks>Needs testing.</remarks>
         public static ItemInformation GetItemInformation(int itemId)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             ItemInformation Information = new ItemInformation();
             bool Status;
 
             // Get the original Id.
-            Information.OriginalItemID = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_ORIG_ID, out Status);
+            Information.originalItemID = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.OriginalId, out Status);
 
             // Get the attributes.
-            Information.Attributes = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_ATTR, out Status);
+            Information.attributes = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.Attributes, out Status);
 
             // Get the flags.
-            Information.Flags = (ItemInformationOptions)
+            Information.options = (ItemInformationOptions)
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_FLAGS, out Status);
+                , ItemInformationType.Options, out Status);
 
             // Get the deletion information.
-            Information.Deletion = (ItemDeletionStatus)
+            Information.deletionStatus = (ItemDeletionStatus)
                 ImportedMethods.XWF_GetItemInformation(itemId
-                    , ItemInformationType.XWF_ITEM_INFO_DELETION, out Status);
+                    , ItemInformationType.DeletionStatus, out Status);
 
             // Get the classification.
-            Information.Classification = (ItemClassifiction)
+            Information.classification = (ItemClassifiction)
                 ImportedMethods.XWF_GetItemInformation(itemId
-                    , ItemInformationType.XWF_ITEM_INFO_CLASSIFICATION, out Status);
+                    , ItemInformationType.Classification, out Status);
 
             // Get the link count.
-            Information.LinkCount = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_LINKCOUNT, out Status);
+            Information.linkCount = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.LinkCount, out Status);
 
             // Get the color analysis.
-            Information.ColorAnalysis = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_COLORANALYSIS, out Status);
+            Information.colorAnalysis = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.ColorAnalysis, out Status);
 
             // Get the file count.
-            Information.FileCount = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_FILECOUNT, out Status);
+            Information.fileCount = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.FileCount, out Status);
 
             // Get the embedded offset.
-            Information.EmbeddedOffset = ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_EMBEDDEDOFFSET, out Status);
+            Information.embeddedOffset = ImportedMethods.XWF_GetItemInformation(itemId
+                , ItemInformationType.EmbeddedOffset, out Status);
 
             // Get the creation time.
-            Information.CreationTime = DateTime.FromFileTime(
+            Information.creationTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_CREATIONTIME, out Status));
+                , ItemInformationType.CreationTime, out Status));
 
             // Get the modification time.
-            Information.ModificationTime = DateTime.FromFileTime(
+            Information.modificationTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_MODIFICATIONTIME, out Status));
+                , ItemInformationType.ModificationTime, out Status));
 
             // Get the last access time.
-            Information.LastAccessTime = DateTime.FromFileTime(
+            Information.lastAccessTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_LASTACCESSTIME, out Status));
+                , ItemInformationType.LastAccessTime, out Status));
 
             // Get the entry modification time.
-            Information.EntryModificationTime = DateTime.FromFileTime(
+            Information.entryModificationTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_ENTRYMODIFICATIONTIME
+                , ItemInformationType.EntryModificationTime
                 , out Status));
 
             // Get the deletion time.
-            Information.DeletionTime = DateTime.FromFileTime(
+            Information.deletionTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_DELETIONTIME, out Status));
+                , ItemInformationType.DeletionTime, out Status));
 
             // Get the internal creation time.
-            Information.InternalCreationTime = DateTime.FromFileTime(
+            Information.internalCreationTime = DateTime.FromFileTime(
                 ImportedMethods.XWF_GetItemInformation(itemId
-                , ItemInformationType.XWF_ITEM_INFO_INTERNALCREATIONTIME
+                , ItemInformationType.InternalCreationTime
                 , out Status));
 
             return Information;
@@ -1101,13 +1106,19 @@ namespace XTensions
         /// Sets information about an item (file or directory) in the volume snapshot. A
         /// helper method for XWF_SetItemInformation().
         /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="informationType"></param>
-        /// <param name="informationValue"></param>
-        /// <remarks>Todo: Everything!</remarks>
+        /// <param name="itemId">The item Id.</param>
+        /// <param name="informationType">The information type.</param>
+        /// <param name="informationValue">The information value.</param>
+        /// <remarks>Needs testing.</remarks>
         public static void SetItemInformation(int itemId
             , ItemInformationType informationType, long informationValue)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
+            ImportedMethods.XWF_SetItemInformation(itemId, informationType,
+                informationValue);
         }
 
         /// <summary>
@@ -1120,9 +1131,13 @@ namespace XTensions
         /// <param name="itemId">The item Id.</param>
         /// <returns>Returns a ItemType structure with the file type and description.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static ItemType GetItemType(int itemId)
         {
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             ItemType Results = new ItemType();
 
             // Allocate a buffer to receive the type description.
@@ -1145,37 +1160,32 @@ namespace XTensions
         /// <param name="itemId">The item Id.</param>
         /// <param name="typeDescription">A type description.</param>
         /// <param name="itemType">The item type category.</param>
-        /// <returns></returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Catching all exceptions; need to investigate possibilities.
-        /// - Todo: Convert to static method.</remarks>
-        public static bool SetItemType(int itemId, string typeDescription
+        /// <remarks>Needs testing.</remarks>
+        public static void SetItemType(int itemId, string typeDescription
             , ItemTypeCategory itemType)
         {
-            try
-            {
-                ImportedMethods.XWF_SetItemType(itemId, typeDescription, itemType);
-            }
-            catch (Exception e)
-            {
-                OutputMessage("Exception: " + e);
-                return false;
-            }
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
 
-            return true;
+            ImportedMethods.XWF_SetItemType(itemId, typeDescription, itemType);
         }
 
         /// <summary>
-        /// Returns the ID of the parent of the specified item, or -1 if the item is the 
+        /// Returns the Id of the parent of the specified item, or -1 if the item is the 
         /// root directory or if for some strange reason no parent object is assigned. A
         /// helper method for XWF_GetItemParent().
         /// </summary>
-        /// <param name="itemId">The item ID.</param>
-        /// <returns>Returns the parent ID of the given item, or -1 if there is none.
+        /// <param name="itemId">The item Id.</param>
+        /// <returns>Returns the parent Id of the given item, or -1 if there is none.
         /// </returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
+        /// <remarks>Needs testing.</remarks>
         public static int GetItemParent(int itemId)
         {
+            // Fail if invalid child item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid child Id provided.");
+
             return ImportedMethods.XWF_GetItemParent(itemId);
         }
 
@@ -1183,44 +1193,50 @@ namespace XTensions
         /// Sets the parent of a given child item. A helper method for 
         /// XWF_SetItemParent().
         /// </summary>
-        /// <param name="childItemID">The child ID.</param>
-        /// <param name="parentItemID">The parent ID.</param>
+        /// <param name="childItemId">The child ID.</param>
+        /// <param name="parentItemId">The parent ID. Specify -1 for the virtual "Path 
+        /// unknown" directory, or -2 for the "Carved files" directory.</param>
         /// <returns>Return true is successful, otherwise false.</returns>
-        /// <remarks>Version 1.0 coding complete.
-        /// - Todo: Catching all exceptions; need to invetigate possibilities.
-        /// - Todo: What happens when invalid child or parents is given?</remarks>
-        public static bool SetItemParent(int childItemID, int parentItemID)
+        /// <remarks>Needs testing. The code that sets the "hasChildren option needs
+        /// looked at closely.</remarks>
+        public static void SetItemParent(int childItemId, int parentItemId)
         {
-            try
+            // Fail if invalid child item Id provided.
+            if (childItemId < 0)
+                throw new ArgumentException("Invalid child Id provided.");
+
+            // Fail if invalid parent item Id provided.
+            if (parentItemId < -2)
+                throw new ArgumentException("Invalid parent Id provided.");
+
+            ImportedMethods.XWF_SetItemParent(childItemId, parentItemId);
+
+            // If the parent doesn't have the "hasChildren" option set, do this.
+            if (parentItemId >= 0 && (GetItemInformation(parentItemId).options & 
+                ItemInformationOptions.hasChildren) == 0)
             {
-                ImportedMethods.XWF_SetItemParent(childItemID, parentItemID);
+                SetItemInformation(parentItemId, ItemInformationType.Options,
+                    (long)(ItemInformationOptions.hasChildren));
             }
-            catch (Exception e)
-            {
-                OutputMessage("Exception: " + e);
-                return false;
-            }
-            return true;
         }
 
         /// <summary>
         /// Retrieves the names of the report tables that the specified item is 
-        /// associated with. The names are delimited with a comma and space. If the 
-        /// buffer was filled completely, that likely means the specified buffer length 
-        /// was insufficient. In v17.6 SR-7 and later, returns the total number of
-        /// associations of that file, and lpBuffer may be NULL. A helper method for
-        /// XWF_GetReportTableAssocs().
+        /// associated with. A helper method for XWF_GetReportTableAssocs().
         /// </summary>
         /// <param name="itemId">The ID of the provided item.</param>
         /// associated with.</param>
-        /// <returns>Returns the number of associations of the given item.</returns>
-        /// <remarks>Version 1.0 coding complete.</remarks>
+        /// <returns>Returns an array of report tables names.</returns>
+        /// <remarks>Needs testing.</remarks>
         public static string[] GetReportTableAssociations(int itemId)
         {
             const int BufferLengthStep = 128;
             string Associations;
 
-            //
+            // Fail if invalid item Id provided.
+            if (itemId < 0)
+                throw new ArgumentException("Invalid item Id provided.");
+
             for (int bufferLength = BufferLengthStep; ; bufferLength += BufferLengthStep)
             {
                 // Allocate a buffer to receive the associations.

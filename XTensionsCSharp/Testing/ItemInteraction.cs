@@ -79,33 +79,33 @@ namespace XTensions.Testing
             ItemInformation itemInfo = HelperMethods.GetItemInformation(itemID);
 
             HelperMethods.OutputMessage("Original ID: "
-                + itemInfo.OriginalItemID, OutputMessageOptions.Level4);
+                + itemInfo.originalItemID, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Attributes: "
-                + itemInfo.Attributes, OutputMessageOptions.Level4);
+                + itemInfo.attributes, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Flags: "
-                + itemInfo.Flags, OutputMessageOptions.Level4);
+                + itemInfo.options, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Deletion Status: "
-                + itemInfo.Deletion, OutputMessageOptions.Level4);
+                + itemInfo.deletionStatus, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Hard Link Count: "
-                + itemInfo.LinkCount, OutputMessageOptions.Level4);
+                + itemInfo.linkCount, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Color Analysis: "
-                + itemInfo.ColorAnalysis, OutputMessageOptions.Level4);
+                + itemInfo.colorAnalysis, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Recursive Child File Count: "
-                + itemInfo.FileCount, OutputMessageOptions.Level4);
+                + itemInfo.fileCount, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Embedded Offset: "
-                + itemInfo.EmbeddedOffset, OutputMessageOptions.Level4);
+                + itemInfo.embeddedOffset, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Creation Time: "
-                + itemInfo.CreationTime, OutputMessageOptions.Level4);
+                + itemInfo.creationTime, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Modification Time: "
-                + itemInfo.ModificationTime, OutputMessageOptions.Level4);
+                + itemInfo.modificationTime, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Last Access Time: "
-                + itemInfo.LastAccessTime, OutputMessageOptions.Level4);
+                + itemInfo.lastAccessTime, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Entry Modification Time: "
-                + itemInfo.EntryModificationTime, OutputMessageOptions.Level4);
+                + itemInfo.entryModificationTime, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Deletion Time: "
-                + itemInfo.DeletionTime, OutputMessageOptions.Level4);
+                + itemInfo.deletionTime, OutputMessageOptions.Level4);
             HelperMethods.OutputMessage("Internal Creation Time: "
-                + itemInfo.InternalCreationTime, OutputMessageOptions.Level4);
+                + itemInfo.internalCreationTime, OutputMessageOptions.Level4);
 
             ItemType CurrentItemType = HelperMethods.GetItemType(itemID);
             HelperMethods.OutputMessage("Item Type: "
