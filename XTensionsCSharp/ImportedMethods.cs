@@ -306,7 +306,7 @@ namespace XTensions
         public delegate void XWFOutputMessageDelegate(
               [MarshalAs(UnmanagedType.LPWStr)] string lpMessage
             , OutputMessageOptions_XWF nFlags = 0);
-        public static XWFOutputMessageDelegate OutputMessage;
+        public static XWFOutputMessageDelegate XWF_OutputMessage;
 
         public delegate long XWFGetUserInputDelegate([MarshalAs(UnmanagedType.LPWStr)]
             string lpMessage, IntPtr lpBuffer, uint nBufferLen, UserInputOptions nFlags);
@@ -367,6 +367,9 @@ namespace XTensions
             {
                 // Get a handle for the XWF API.
                 IntPtr moduleHandle = NativeMethods.GetModuleHandle(IntPtr.Zero);
+
+                XWF_OutputMessage = GetMethodDelegate<XWFOutputMessageDelegate>(
+                    moduleHandle, "XWF_OutputMessage");
 
                 XWF_GetSize = GetMethodDelegate<XWFGetSizeDelegate>(
                     moduleHandle, "XWF_GetSize");
@@ -583,9 +586,11 @@ namespace XTensions
                 XWF_GetSearchTerm = GetMethodDelegate<XWFGetSearchTermDelegate>(
                     moduleHandle, "XWF_GetSearchTerm");
 
+                /* Todo Fix this
                 XWF_GetSearchTermCount 
                     = GetMethodDelegate<XWFGetSearchTermCountDelegate>(moduleHandle, 
                     "XWF_GetSearchTerm");
+                */
 
                 /*
                 XWFAddSearchHit = GetMethodDelegate<XWFAddSearchHitDelegate>(
@@ -607,8 +612,10 @@ namespace XTensions
                 XWF_CloseContainer = GetMethodDelegate<XWFCloseContainerDelegate>(
                     moduleHandle, "XWF_CloseContainer");
 
+                /*
                 OutputMessage = GetMethodDelegate<XWFOutputMessageDelegate>(
                     moduleHandle, "OutputMessage");
+                */
 
                 XWF_GetUserInput = GetMethodDelegate<XWFGetUserInputDelegate>(
                     moduleHandle, "XWF_GetUserInput");
@@ -631,7 +638,7 @@ namespace XTensions
                     moduleHandle, "XWF_HideProgress");
 
                 XWF_ReleaseMem = GetMethodDelegate<XWFReleaseMemDelegate>(
-                    moduleHandle, "XWF_RelaseMem");
+                    moduleHandle, "XWF_ReleaseMem");
             }
             catch(Exception e)
             {

@@ -279,7 +279,7 @@ namespace XTensions
         /// </summary>
         /// <returns>Returns a CaseProperties structure.</returns>
         /// <remarks>Test for when no case is loaded.</remarks>
-        public static CaseProperties? GetCaseProperties()
+        public static CaseProperties GetCaseProperties()
         {
             long Status;
             CaseProperties Properties = new CaseProperties();
@@ -294,7 +294,6 @@ namespace XTensions
             // A negative status indicates no case is loaded; return null.
             if (Status < 0)
             {
-                return null;
             }
 
             // Read the examiner.
@@ -1735,12 +1734,12 @@ namespace XTensions
             if ((options & OutputMessageOptions.Ansi) != 0)
                 xwf_options |= OutputMessageOptions_XWF.Ansi;
 
-            ImportedMethods.OutputMessage(message, xwf_options);
+            ImportedMethods.XWF_OutputMessage(message, xwf_options);
 
             // Output a blank line after the message for headers.
             if ((options & OutputMessageOptions.Header) != 0)
             {
-                ImportedMethods.OutputMessage("");
+                ImportedMethods.XWF_OutputMessage("");
             }
         }
 

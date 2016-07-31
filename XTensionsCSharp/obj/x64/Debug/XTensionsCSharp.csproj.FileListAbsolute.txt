@@ -2,3 +2,7 @@ C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTension
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\bin\x64\Debug\XTensionsCSharp.pdb
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.dll
 C:\Users\zildjian\documents\visual studio 2015\Projects\XTensionsCSharp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.pdb
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\x64\Debug\XTensionsCSharp.dll
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\x64\Debug\XTensionsCSharp.pdb
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.dll
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.pdb
