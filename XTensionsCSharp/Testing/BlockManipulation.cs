@@ -20,7 +20,7 @@ namespace XTensions.Testing
                 OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
             // XWF_GetBlock test.
-            HelperMethods.OutputMessage("XWF_GetBlock() Test", 
+            HelperMethods.OutputMessage("GetBlock() Test", 
                 OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             BlockBoundaries blockBoundaries = HelperMethods.GetBlock(hVolume);
@@ -40,7 +40,7 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("");
 
             // XWF_SetBlock test.
-            HelperMethods.OutputMessage("XWF_SetBlock() Test", 
+            HelperMethods.OutputMessage("SetBlock() Test", 
                 OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             BlockBoundaries newBoundaries;

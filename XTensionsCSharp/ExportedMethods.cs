@@ -155,9 +155,9 @@ namespace XTensions
             _currentAction = nOpType;
 
             // Run testing.  Eventually need to break this down.
+            //Testing.VolumeInteraction.RunTest(hVolume, nOpType);
             //Testing.CaseDetails.RunTest(hVolume, nOpType);
-            //Testing.BlockManipulation.RunTest(hVolume, nOpType);
-            Testing.VolumeInteraction.RunTest(hVolume, nOpType);
+            Testing.BlockManipulation.RunTest(hVolume, nOpType);
             //Testing.SectorInteraction.RunTest(hVolume, nOpType);
             //Testing.ItemInteraction.RunTest(hVolume, nOpType);
 

@@ -16,7 +16,7 @@ namespace XTensions.Testing
                 OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
             // XWF_GetCaseProp() test.
-            HelperMethods.OutputMessage("XWF_GetCaseProp() Test", 
+            HelperMethods.OutputMessage("GetCaseProp() Test", 
                 OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             CaseProperties caseProps = HelperMethods.GetCaseProperties();

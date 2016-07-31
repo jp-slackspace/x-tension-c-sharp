@@ -15,8 +15,8 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("VOLUME INTERACTION TESTING MODULE"
                 , OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
-            // XWF_GetSize() test.
-            HelperMethods.OutputMessage("XWF_GetSize() Test"
+            // GetSize() test.
+            HelperMethods.OutputMessage("GetSize() Test"
                 , OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             var itemPhysicalSize = HelperMethods.GetSize(hVolume
@@ -36,9 +36,8 @@ namespace XTensions.Testing
 
             HelperMethods.OutputMessage("");
 
-            // XWF_GetVolumeName() test.
-            // TODO: Find out what the different types are exactly.
-            HelperMethods.OutputMessage("XWF_GetVolumeName() Test"
+            // GetVolumeName() test.
+            HelperMethods.OutputMessage("GetVolumeName() Test"
                 , OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             string type1VolumeName = HelperMethods.GetVolumeName(hVolume
@@ -58,8 +57,8 @@ namespace XTensions.Testing
 
             HelperMethods.OutputMessage("");
 
-            // XWF_GetVolumeInformation() test.
-            HelperMethods.OutputMessage("XWF_GetVolumeInformation() Test"
+            // GetVolumeInformation() test.
+            HelperMethods.OutputMessage("GetVolumeInformation() Test"
                 , OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
             VolumeInformation volumeInformation
