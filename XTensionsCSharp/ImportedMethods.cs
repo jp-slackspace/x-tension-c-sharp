@@ -144,6 +144,12 @@ namespace XTensions
         public static XWFGetItemNameDelegate XWF_GetItemName;
         */
 
+        /*
+        [return: MarshalAs(UnmanagedType.LPWStr)]
+        public delegate string XWFGetItemNameDelegate(int itemID);
+        public static XWFGetItemNameDelegate XWF_GetItemName;
+        */
+
         public delegate IntPtr XWFGetItemNameDelegate(int itemID);
         public static XWFGetItemNameDelegate XWF_GetItemName;
 

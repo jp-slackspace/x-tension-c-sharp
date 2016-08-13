@@ -4,12 +4,12 @@ namespace XTensions.Testing
 {
     public static class SectorInteraction
     {
-        private static void ProcessSector(IntPtr hVolume, Int64 nSectorNumber)
+        private static void ProcessSector(IntPtr volume, Int64 sectorNumber)
         {
-            SectorInformation sectorInfo = HelperMethods.GetSectorContents(hVolume
-                , nSectorNumber);
+            SectorInformation sectorInfo = HelperMethods.GetSectorContents(volume
+                , sectorNumber);
 
-            HelperMethods.OutputMessage("Sector Number: " + nSectorNumber
+            HelperMethods.OutputMessage("Sector Number: " + sectorNumber
                 , OutputMessageOptions.Level3);
             HelperMethods.OutputMessage("Is Sector Allocated: "
                 + sectorInfo.IsAllocated, OutputMessageOptions.Level4);
@@ -24,11 +24,11 @@ namespace XTensions.Testing
         /// <summary>
         /// Run a test for the block manipulation methods.
         /// </summary>
-        /// <param name="hVolume">The current volume pointer.</param>
-        /// <param name="nOpType">The current operation type.</param>
+        /// <param name="volume">The current volume pointer.</param>
+        /// <param name="operationType">The current operation type.</param>
         /// <returns></returns>
-        public static void RunTest(IntPtr hVolume
-            , XTensionActionSource nOpType = XTensionActionSource.MainMenu)
+        public static void RunTest(IntPtr volume
+            , XTensionActionSource operationType = XTensionActionSource.MainMenu)
         {
             HelperMethods.OutputMessage("SECTOR INTERACTION TESTING MODULE"
                 , OutputMessageOptions.Level1 | OutputMessageOptions.Header);
@@ -37,7 +37,7 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("GetSize() Test"
                 , OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
-            var itemPhysicalSize = HelperMethods.GetSize(hVolume
+            var itemPhysicalSize = HelperMethods.GetSize(volume
                 , ItemSizeType.PhysicalSize);
             HelperMethods.OutputMessage("Volume Physical Size: " + itemPhysicalSize
                 , OutputMessageOptions.Level3);
@@ -55,18 +55,18 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("");
 
             // XWF_GetSectorContents() test.
-            HelperMethods.OutputMessage("XWF_GetSectorContents() Test"
+            HelperMethods.OutputMessage("GetSectorContents() Test"
                 , OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
-            ProcessSector(hVolume, 100);
-            ProcessSector(hVolume, 1000);
-            ProcessSector(hVolume, 8696);
-            ProcessSector(hVolume, 10000);
-            ProcessSector(hVolume, 100000);
-            ProcessSector(hVolume, 1000000);
-            ProcessSector(hVolume, 10000000);
-            ProcessSector(hVolume, 100000000);
-            ProcessSector(hVolume, 1000000000);
+            ProcessSector(volume, 100);
+            ProcessSector(volume, 1000);
+            ProcessSector(volume, 8696);
+            ProcessSector(volume, 10000);
+            ProcessSector(volume, 100000);
+            ProcessSector(volume, 1000000);
+            ProcessSector(volume, 10000000);
+            ProcessSector(volume, 100000000);
+            ProcessSector(volume, 1000000000);
         }
     }
 }

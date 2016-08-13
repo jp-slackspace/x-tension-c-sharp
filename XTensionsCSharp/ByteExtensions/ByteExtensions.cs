@@ -107,7 +107,7 @@ namespace ByteExtensions
         }
 
         /// <summary>
-        /// Returns a string of a spcified length from a specific position in a byte 
+        /// Returns a string of a specified length from a specific position in a byte 
         /// array.
         /// </summary>
         /// <param name="x">The byte array.</param>

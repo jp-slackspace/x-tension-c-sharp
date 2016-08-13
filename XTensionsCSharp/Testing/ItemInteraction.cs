@@ -52,8 +52,8 @@ namespace XTensions.Testing
             }
             else
             {
-                HelperMethods.OutputMessage(String.Format("XWF_GetSize() results " 
-                    + "({1}) differs from XWF_GetItemSize() results ({2}).", itemSize
+                HelperMethods.OutputMessage(String.Format("GetSize() results " 
+                    + "({1}) differs from GetItemSize() results ({2}).", itemSize
                     , itemSize2), OutputMessageOptions.Level4);
             }
 
@@ -183,14 +183,15 @@ namespace XTensions.Testing
         /// <param name="hVolume">The current volume pointer.</param>
         /// <param name="nOpType">The current operation type.</param>
         /// <returns></returns>
-        public static void RunTest(IntPtr hVolume
-            , XTensionActionSource nOpType = XTensionActionSource.MainMenu)
+        public static void RunTest(IntPtr volume
+            , XTensionActionSource operationType = XTensionActionSource.MainMenu)
         {
             HelperMethods.OutputMessage("ITEM INTERACTION TESTING MODULE", 
                 OutputMessageOptions.Level1 | OutputMessageOptions.Header);
 
-            ProcessItem(hVolume, 7554);
-            ProcessItem(hVolume, 2680);
+            ProcessItem(volume, 7426);
+            //ProcessItem(volume, 7433);
+            ProcessItem(volume, 7554);
         }
     }
 }

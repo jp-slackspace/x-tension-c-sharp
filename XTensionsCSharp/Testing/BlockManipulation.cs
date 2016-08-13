@@ -11,10 +11,9 @@ namespace XTensions.Testing
         /// <summary>
         /// Run a test for the block manipulation methods.
         /// </summary>
-        /// <param name="hVolume">The current volume pointer.</param>
-        /// <param name="nOpType">The current operation type.</param>
-        /// <returns></returns>
-        public static void RunTest(IntPtr hVolume, XTensionActionSource nOpType)
+        /// <param name="volume">The current volume pointer.</param>
+        /// <param name="operationType">The current operation type.</param>
+        public static void RunTest(IntPtr volume, XTensionActionSource operationType)
         {
             HelperMethods.OutputMessage("BLOCK MANIPULATION TESTING MODULE", 
                 OutputMessageOptions.Level1 | OutputMessageOptions.Header);
@@ -23,7 +22,7 @@ namespace XTensions.Testing
             HelperMethods.OutputMessage("GetBlock() Test", 
                 OutputMessageOptions.Level2 | OutputMessageOptions.Header);
 
-            BlockBoundaries blockBoundaries = HelperMethods.GetBlock(hVolume);
+            BlockBoundaries blockBoundaries = HelperMethods.GetBlock(volume);
 
             if (blockBoundaries.EndOffset == -1)
             {
@@ -47,8 +46,8 @@ namespace XTensions.Testing
             newBoundaries.StartOffset = 4;
             newBoundaries.EndOffset = 8;
 
-            bool setBlockResult = HelperMethods.SetBlock(hVolume, newBoundaries);
-            blockBoundaries = HelperMethods.GetBlock(hVolume);
+            bool setBlockResult = HelperMethods.SetBlock(volume, newBoundaries);
+            blockBoundaries = HelperMethods.GetBlock(volume);
 
             if (blockBoundaries.Equals(newBoundaries))
             {
@@ -63,8 +62,8 @@ namespace XTensions.Testing
 
             newBoundaries.StartOffset = 0;
             newBoundaries.EndOffset = -1;
-            setBlockResult = HelperMethods.SetBlock(hVolume, newBoundaries);
-            blockBoundaries = HelperMethods.GetBlock(hVolume);
+            setBlockResult = HelperMethods.SetBlock(volume, newBoundaries);
+            blockBoundaries = HelperMethods.GetBlock(volume);
 
             if (blockBoundaries.Equals(newBoundaries))
             {

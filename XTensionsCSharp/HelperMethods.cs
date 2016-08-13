@@ -858,13 +858,11 @@ namespace XTensions
             if (itemId < -1) throw new ArgumentException(
                 "Invalid item Id provided.");
 
-            string Result;
+            IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
+            Buffer = ImportedMethods.XWF_GetItemName(itemId);
+            string name = Marshal.PtrToStringAuto(Buffer);
 
-            IntPtr Buffer = ImportedMethods.XWF_GetItemName(itemId);
-            Result = Marshal.PtrToStringUni(Buffer);
-            Marshal.FreeHGlobal(Buffer);
-
-            return Result;
+            return name;
         }
 
         /// <summary>
