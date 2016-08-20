@@ -1305,11 +1305,8 @@ namespace XTensions
             if (itemId < 0)
                 throw new ArgumentException("Invalid item Id provided.");
 
-            string Comment;
-
             IntPtr Buffer = ImportedMethods.XWF_GetComment(itemId);
-            Comment = Marshal.PtrToStringUni(Buffer);
-            Marshal.FreeHGlobal(Buffer);
+            String Comment = Marshal.PtrToStringAuto(Buffer);
 
             return Comment;
         }
@@ -1350,11 +1347,8 @@ namespace XTensions
             if (itemId < 0)
                 throw new ArgumentException("Invalid item Id provided.");
 
-            string Metadata;
-
             IntPtr Buffer = ImportedMethods.XWF_GetExtractedMetadata(itemId);
-            Metadata = Marshal.PtrToStringUni(Buffer);
-            Marshal.FreeHGlobal(Buffer);
+            string Metadata = Marshal.PtrToStringAuto(Buffer);
 
             return Metadata;
         }

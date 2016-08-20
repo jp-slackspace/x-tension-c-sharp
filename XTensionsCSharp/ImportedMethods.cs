@@ -206,7 +206,7 @@ namespace XTensions
             , AddToReportTableOptions nFlags);
         public static XWFAddToReportTableDelegate XWF_AddToReportTable;
 
-        public delegate IntPtr XWFGetCommentDelegate(int ItemID);
+        public delegate IntPtr XWFGetCommentDelegate(int nItemID);
         public static XWFGetCommentDelegate XWF_GetComment;
 
         public delegate bool XWFAddCommentDelegate(int nItemID
