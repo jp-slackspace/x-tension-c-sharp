@@ -753,6 +753,28 @@ namespace XTensions
         UserSearchTerm = 0x02u
     }
     
+    [Flags]
+    public enum SectorIOOptions : uint
+    {
+        None = 0,
+        /// <summary>NOT YET IMPLEMENTED. If not yet set, read is assumed.</summary>
+        Write = 0x01,
+        /// <summary>Stop on I/O error and return the number of successfully read sectors
+        /// (if not set, X­Ways Forensics will try to continue and fill unreadable sectors
+        /// with an ASCII pattern and return the total number of sectors tried).
+        /// </summary>
+        StopOnError = 0x02,
+        /// <summary>Output error messages in the GUI in case of I/O errors 0x08: do not 
+        /// trigger any pending skeleton image acquisition through a read operation.
+        /// </summary>
+        OutputErrorMessages = 0x04,
+        /// <summary>Check whether the entire range of sectors is defined as sparse in a 
+        /// lower abstraction layer, for performance benefits 0x20 (returned): the entire 
+        /// range of sectors targeted is sparse, so you may ignore it, and the buffer was 
+        /// not filled</summary>
+        CheckSparse = 0x10    
+    }
+
     /// <summary>
     /// Special item types.
     /// </summary>

@@ -59,6 +59,10 @@ namespace XTensions
         public static XWFWriteDelegate XWF_Write;
         */
 
+        public delegate uint XWFSectorIODelegate(int nDrive, long nSector, uint nCount,
+            IntPtr lpBuffer, SectorIOOptions nFlags);
+        public static XWFSectorIODelegate XWF_SectorIO;
+
         public delegate long XWFGetCasePropDelegate(IntPtr pReserved, int nPropType
             , IntPtr pBuffer, int nBufSize);
         public static XWFGetCasePropDelegate XWF_GetCaseProp;
@@ -414,6 +418,9 @@ namespace XTensions
                 XWFWrite = GetMethodDelegate<XWFWriteDelegate>(
                     moduleHandle, "XWF_Write");
                 */
+
+                XWF_SectorIO = GetMethodDelegate<XWFSectorIODelegate>(
+                    moduleHandle, "XWF_SectorIO");
 
                 XWF_GetCaseProp = GetMethodDelegate<XWFGetCasePropDelegate>(
                     moduleHandle, "XWF_GetCaseProp");

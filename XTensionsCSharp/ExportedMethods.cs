@@ -159,7 +159,7 @@ namespace XTensions
             //Testing.CaseDetails.RunTest(hVolume, nOpType);
             //Testing.BlockManipulation.RunTest(hVolume, nOpType);
             //Testing.SectorInteraction.RunTest(hVolume, nOpType);
-            Testing.ItemInteraction.RunTest(hVolume, nOpType);
+            //Testing.ItemInteraction.RunTest(hVolume, nOpType);
 
             // Return Value 2: In case of XT_ACTION_RVS, same, but to receive calls of 
             // XT_ProcessItem (if exported) after all other individual item refinement 
