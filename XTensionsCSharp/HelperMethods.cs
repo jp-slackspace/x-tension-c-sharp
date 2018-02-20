@@ -274,6 +274,18 @@ namespace XTensions
         }
 
         /// <summary>
+        /// Reads or writes the specified sector number from or to the specified disk or
+        /// image or partition or volume or RAID. May be called when processing 
+        /// XT_SectorIO. Returns the number of sectors read/written/covered. Available 
+        /// from v18.4. A helper method for XWF_SectorIO().
+        /// </summary>
+        /// <remarks>Needs everything.</remarks>
+        public static void SectorIO()
+        {
+
+        }
+        
+        /// <summary>
         /// Retrieves information about the current case. A helper method for 
         /// XWF_GetCaseProp().
         /// </summary>
@@ -1378,14 +1390,21 @@ namespace XTensions
 
         /// <summary>
         /// Retrieves the hash value of a a file if one has been computed, which can be 
-        /// checked using GetItemInformation(). Available in v16.8 and later. A helper 
-        /// method for XWF_GetHashValue().
+        /// checked using GetItemInformation(). Returns true in v17.4 and later if no I/O
+        /// error occurred when copying the hash value into the buffer. To find out the 
+        /// type of hash value, call GetVolumeSnapshotProperties() and check the 
+        /// hashType1 or hashType2 property. The buffer should be prepared and its start 
+        /// filled with a single DWORD value of 0x00000001. In v18.0 SR-12, v18.1 SR-7, 
+        /// v18.2 SR-5, v18.3 SR-4 and later versions you may fill the buffer with a 
+        /// DWORD 0x00000002 to request the secondary hash value of a file instead of the 
+        /// primary hash value. Available in v16.8 and later. A helper method for 
+        /// XWF_GetHashValue().
         /// </summary>
         /// <param name="itemId">The Id of the file item.</param>
         /// <returns>Returns the file hash.</returns>
         /// <remarks>Needs testing. Check version. Define variable for the buffer length.
         /// </remarks>
-        public static string GetHashValue(int itemId)
+        public static string GetHashValue(int itemId, HashNumber hashNum)
         {
             // Fail if item Id less than 0 provided.
             if (itemId < 0)
@@ -1393,6 +1412,26 @@ namespace XTensions
 
             string Hash;
             IntPtr Buffer = Marshal.AllocHGlobal(_volumeNameBufferLength);
+
+            if (hashNum == HashNumber.Primary || hashNum == HashNumber.SecondPhotoDNA)
+                Marshal.WriteByte(Buffer, 0, 1);
+            else if (hashNum == HashNumber.ThirdPhotoDNA)
+                Marshal.WriteByte(Buffer, 0, 2);
+            else
+                Marshal.WriteByte(Buffer, 0, 0);
+
+            if (hashNum == HashNumber.FirstPhotoDNA || 
+                hashNum == HashNumber.SecondPhotoDNA ||
+                hashNum == HashNumber.ThirdPhotoDNA)
+            {
+                Marshal.WriteByte(Buffer, 0, 1);
+            }
+            else
+                Marshal.WriteByte(Buffer, 0, 0);
+
+            Marshal.WriteByte(Buffer, 0, 0);
+            Marshal.WriteByte(Buffer, 0, 0);
+
             ImportedMethods.XWF_GetHashValue(itemId, Buffer);
             Hash = Marshal.PtrToStringUni(Buffer);
             Marshal.FreeHGlobal(Buffer);

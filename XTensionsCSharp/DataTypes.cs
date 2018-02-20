@@ -386,6 +386,15 @@ namespace XTensions
         HashValue2 = 41u
     }
 
+    public enum HashNumber : int
+    {
+        Primary = 1,
+        Secondary = 2,
+        FirstPhotoDNA = 3,
+        SecondPhotoDNA = 4,
+        ThirdPhotoDNA = 5
+    }
+
     public enum HashType : int
     {
         Undefined = 0,

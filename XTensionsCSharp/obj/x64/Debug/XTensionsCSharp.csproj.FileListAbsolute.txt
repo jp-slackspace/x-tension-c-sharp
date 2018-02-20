@@ -6,3 +6,4 @@ C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\x64\Deb
 C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\bin\x64\Debug\XTensionsCSharp.pdb
 C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.dll
 C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.pdb
+C:\Users\zildjian\Documents\GitHub\x-tension-c-charp\XTensionsCSharp\obj\x64\Debug\XTensionsCSharp.csprojResolveAssemblyReference.cache

@@ -69,6 +69,7 @@
     <Compile Include="HelperMethods.cs" />
     <Compile Include="ImportedMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Testing\Reading.cs" />
     <Compile Include="Testing\BlockManipulation.cs" />
     <Compile Include="Testing\CaseDetails.cs" />
     <Compile Include="Testing\ItemInteraction.cs" />
