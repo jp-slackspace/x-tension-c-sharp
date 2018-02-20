@@ -907,8 +907,8 @@ namespace XTensions
                 if (parentItemId < 0) return sb.ToString();
 
                 // Prepend the parent name and the path separator and continue.
-                sb.Insert(0, Path.DirectorySeparatorChar + GetItemName(itemId));
                 itemId = parentItemId;
+                sb.Insert(0, GetItemName(itemId) + Path.DirectorySeparatorChar);
             }
         }
 

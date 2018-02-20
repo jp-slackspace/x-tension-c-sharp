@@ -37,8 +37,8 @@ namespace XTensions
         /// a certain version of XWF). Otherwise you must return 1, optionally combined
         /// </returns>
         [DllExport]
-        public static int XT_Init(CallerInformation nVersion
-            , CallingProgramCapabilities nFlags, IntPtr hMainWnd, IntPtr lpReserved)
+        public static int XT_Init(CallerInformation nVersion, CallingProgramCapabilities 
+            nFlags, IntPtr hMainWnd, IntPtr lpReserved)
         {
 
             // Check the release capabilites. Not necessary for our purposes since we
