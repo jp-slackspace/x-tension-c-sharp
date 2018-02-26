@@ -1404,7 +1404,7 @@ namespace XTensions
         /// <returns>Returns the file hash.</returns>
         /// <remarks>Needs testing. Check version. Define variable for the buffer length.
         /// </remarks>
-        public static string GetHashValue(int itemId, HashNumber hashNum)
+        public static string GetHashValue(int itemId, HashNumber hashNum = HashNumber.Primary)
         {
             // Fail if item Id less than 0 provided.
             if (itemId < 0)
@@ -1424,16 +1424,22 @@ namespace XTensions
                 hashNum == HashNumber.SecondPhotoDNA ||
                 hashNum == HashNumber.ThirdPhotoDNA)
             {
-                Marshal.WriteByte(Buffer, 0, 1);
+                Marshal.WriteByte(Buffer, 1, 1);
             }
             else
-                Marshal.WriteByte(Buffer, 0, 0);
+                Marshal.WriteByte(Buffer, 1, 0);
 
-            Marshal.WriteByte(Buffer, 0, 0);
-            Marshal.WriteByte(Buffer, 0, 0);
+            Marshal.WriteByte(Buffer, 2, 0);
+            Marshal.WriteByte(Buffer, 3, 0);
 
             ImportedMethods.XWF_GetHashValue(itemId, Buffer);
-            Hash = Marshal.PtrToStringUni(Buffer);
+
+            byte[] ba = new byte[16];
+
+            Marshal.Copy(Buffer, ba, 0, 16);
+
+            Hash = BitConverter.ToString(ba).Replace("-", "");
+
             Marshal.FreeHGlobal(Buffer);
             return Hash;
         }

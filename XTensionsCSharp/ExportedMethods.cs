@@ -218,10 +218,14 @@ namespace XTensions
             string itemPath = HelperMethods.GetFullPath(nItemID);
             ItemType itemType = HelperMethods.GetItemType(nItemID);
             long itemSize = HelperMethods.GetItemSize(nItemID);
+            string itemPrimaryHash = HelperMethods.GetHashValue(nItemID);
+            string itemSecondaryHash = HelperMethods.GetHashValue(nItemID, HashNumber.Secondary);
 
             HelperMethods.OutputMessage("Item Name: " + itemName);
-            //HelperMethods.OutputMessage("Item Path: " + itemPath);
-            HelperMethods.OutputMessage("Item Type: " + itemType.Type);
+            HelperMethods.OutputMessage("Item Path: " + itemPath);
+            HelperMethods.OutputMessage("Item Primary Hash: " + itemPrimaryHash);
+            HelperMethods.OutputMessage("Item Secondary Hash: " + itemSecondaryHash);
+            HelperMethods.OutputMessage("Item Type: " + itemType.Description);
             HelperMethods.OutputMessage("Item Size: " + itemSize);
 
             // Get a pointer to the current item's data.
