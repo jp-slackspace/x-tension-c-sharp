@@ -560,6 +560,23 @@ namespace XTensions
         ValidDataLength = 2u
     }
 
+    public enum ItemTypeOptions : uint
+    {
+        /// <summary>Default. Retrieves a textual designation of the type of the specified 
+        /// file (e.g. "jpg" or "dll")</summary>
+        TextualDesignation = 0x00000000u,
+        /// <summary>Retrieves a textual description of the file type instead (e.g. 
+        /// "JPEG" or "Dynamic-Link Library"</summary>
+        TextualDescription = 0x20000000u,
+        /// <summary>Retrieves a textual designation of the category that the file type 
+        /// belongs to instead (e.g. "Pictures" or "Programs").</summary>
+        CategoryTextualDesignation = 0x40000000u,
+        /// <summary>Received a type status as usual in the lowest byte, but also file 
+        /// format consistency in the second-lowest byte (0=unknown, 1=OK, 2=irregular), 
+        /// v19.3 and later.</summary>
+        FileFormatConsistency = 0x80000000u,
+    }
+
     public enum ItemTypeCategory : int
     {
         Error = -1,

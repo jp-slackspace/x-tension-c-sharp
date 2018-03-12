@@ -1131,17 +1131,21 @@ namespace XTensions
         }
 
         /// <summary>
-        /// Retrieves a textual description of the type of the specified file and 
-        /// returns information about the status of the type detection of the file: 
+        /// Retrieves a textual designation of the type of the specified file (e.g. "jpg"
+        /// or "dll"), a textual description of the type of the specified file (e.g. 
+        /// "JPEG" or "Dynamic-Link Library"), or a textual designation of the category 
+        /// that the file type belongs to (e.g. "Pictures" or "Programs") and returns 
+        /// information about the status of the type detection of the file: 
         /// 0 = not verified, 1 = too small, 2 = totally unknown, 3 = confirmed, 
         /// 4 = not confirmed, 5 = newly identified, 6 (v18.8 and later only) = mismatch
-        /// detected. ­1 means error. A helper method for XWF_GetItemType().
+        /// detected. -­1 means error. A helper method for XWF_GetItemType().
         /// </summary>
         /// <param name="itemId">The item Id.</param>
+        /// <param name="itemTypeOptions">The type of item type to return.</param>
         /// <returns>Returns a ItemType structure with the file type and description.
         /// </returns>
-        /// <remarks>Needs testing.</remarks>
-        public static ItemType GetItemType(int itemId)
+        public static ItemType GetItemType(int itemId, ItemTypeOptions itemTypeOptions = 
+            ItemTypeOptions.TextualDesignation)
         {
             // Fail if invalid item Id provided.
             if (itemId < 0)
@@ -1154,8 +1158,9 @@ namespace XTensions
 
             // Get the results from the API function, including the type description.
             Results.Type = ImportedMethods.XWF_GetItemType(itemId, bufferPtr
-                , _itemTypeDescriptionBufferLength);
+                , _itemTypeDescriptionBufferLength + (int)itemTypeOptions);
             Results.Description = Marshal.PtrToStringUni(bufferPtr);
+
             Marshal.FreeHGlobal(bufferPtr);
 
             return Results;
